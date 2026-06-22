@@ -1,0 +1,1923 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Master Ultra 2.0 — Gerador de Imagens Bíblicas IA</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root {
+  --gold:        #C9A84C;
+  --gold-light:  #E8C96B;
+  --gold-dim:    #7A5F28;
+  --bg-base:     #0D0D0F;
+  --bg-card:     #16161A;
+  --bg-input:    #1C1C22;
+  --bg-hover:    #22222A;
+  --border:      rgba(201,168,76,0.18);
+  --border-mid:  rgba(201,168,76,0.35);
+  --text-primary:#F0EAD6;
+  --text-muted:  #8A8070;
+  --text-dim:    #5A5448;
+  --radius-sm:   6px;
+  --radius-md:   10px;
+  --radius-lg:   16px;
+  --radius-xl:   22px;
+  --shadow-card: 0 2px 24px rgba(0,0,0,0.55);
+  --shadow-glow: 0 0 32px rgba(201,168,76,0.08);
+  --font-display:'Playfair Display', Georgia, serif;
+  --font-body:   'Inter', system-ui, sans-serif;
+  --transition:  0.18s ease;
+}
+
+/* Light mode */
+.light {
+  --bg-base:    #F5F0E8;
+  --bg-card:    #FFFFFF;
+  --bg-input:   #F0EAE0;
+  --bg-hover:   #EAE4D8;
+  --border:     rgba(140,105,40,0.18);
+  --border-mid: rgba(140,105,40,0.35);
+  --text-primary:#1A1208;
+  --text-muted: #6B5D40;
+  --text-dim:   #A0906C;
+  --shadow-card:0 2px 20px rgba(0,0,0,0.10);
+  --shadow-glow:0 0 28px rgba(201,168,76,0.06);
+}
+
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.6;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ============================================================
+   LAYOUT
+   ============================================================ */
+.page-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 20px 80px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+header {
+  padding: 40px 0 32px;
+  text-align: center;
+  position: relative;
+}
+
+.header-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 14px;
+}
+
+.header-eyebrow::before,
+.header-eyebrow::after {
+  content: '';
+  display: block;
+  width: 28px;
+  height: 1px;
+  background: var(--gold-dim);
+}
+
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 5vw, 40px);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--text-primary);
+  margin-bottom: 10px;
+}
+
+h1 span {
+  color: var(--gold);
+}
+
+.header-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.65;
+}
+
+/* Theme toggle */
+.theme-toggle {
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: border-color var(--transition), color var(--transition);
+  user-select: none;
+}
+
+.theme-toggle:hover {
+  border-color: var(--border-mid);
+  color: var(--text-primary);
+}
+
+.theme-icon { font-size: 15px; }
+
+/* ============================================================
+   DIVIDER
+   ============================================================ */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 28px 0 20px;
+}
+
+.divider-line {
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+.divider-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   CARD
+   ============================================================ */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 26px 28px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow-card);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.card:focus-within {
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.card-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, var(--gold-dim), rgba(201,168,76,0.12));
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.card-label-text {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.card-sub {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+
+.badge-required {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: rgba(201,168,76,0.12);
+  color: var(--gold);
+  border: 1px solid rgba(201,168,76,0.25);
+  border-radius: 20px;
+  padding: 3px 9px;
+  white-space: nowrap;
+}
+
+.badge-optional {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 9px;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   FORM FIELDS
+   ============================================================ */
+textarea, input[type="text"] {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 13px 15px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--text-primary);
+  resize: vertical;
+  transition: border-color var(--transition), box-shadow var(--transition);
+  outline: none;
+  line-height: 1.65;
+}
+
+textarea::placeholder, input::placeholder {
+  color: var(--text-dim);
+  font-style: italic;
+}
+
+textarea:focus, input:focus {
+  border-color: var(--border-mid);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+}
+
+.char-counter {
+  text-align: right;
+  font-size: 11px;
+  color: var(--text-dim);
+  margin-top: 6px;
+}
+
+/* ============================================================
+   STYLE SELECTOR
+   ============================================================ */
+.style-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.style-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 3px;
+  padding: 10px 13px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.style-opt:hover {
+  border-color: var(--border-mid);
+  background: var(--bg-hover);
+}
+
+.style-opt.active {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.07);
+}
+
+.style-emoji { font-size: 17px; }
+
+.style-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-primary);
+  line-height: 1.3;
+}
+
+.style-desc {
+  font-size: 10px;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+.style-opt.active .style-name { color: var(--gold); }
+
+/* ============================================================
+   CENÁRIOS — CATEGORIAS
+   ============================================================ */
+.scenario-categories {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.scenario-cat-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 8px;
+}
+
+.scenario-cat-label .cat-emoji { font-size: 13px; }
+
+.scenario-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 8px;
+}
+
+.scenario-opt {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+  font-size: 12px;
+  color: var(--text-primary);
+}
+
+.scenario-opt:hover {
+  border-color: var(--border-mid);
+  background: var(--bg-hover);
+}
+
+.scenario-opt.active {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.07);
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.scenario-custom-wrap {
+  margin-top: 4px;
+}
+
+.scenario-custom-wrap textarea {
+  display: none;
+}
+
+.scenario-custom-wrap.visible textarea {
+  display: block;
+  margin-top: 10px;
+}
+
+/* ============================================================
+   IMAGE UPLOAD
+   ============================================================ */
+.upload-area {
+  border: 1.5px dashed var(--border-mid);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+  position: relative;
+}
+
+.upload-area:hover, .upload-area.drag-over {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.04);
+}
+
+.upload-area input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+  width: 100%;
+  height: 100%;
+}
+
+.upload-icon { font-size: 28px; margin-bottom: 8px; }
+
+.upload-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-primary);
+  margin-bottom: 3px;
+}
+
+.upload-hint {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.upload-gold { color: var(--gold); text-decoration: underline; }
+
+.preview-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.preview-item {
+  position: relative;
+  width: 72px;
+  height: 72px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--border-mid);
+}
+
+.preview-item img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.preview-remove {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 18px;
+  height: 18px;
+  background: rgba(0,0,0,0.75);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #fff;
+  cursor: pointer;
+  border: none;
+  line-height: 1;
+}
+
+/* ============================================================
+   AI TARGET
+   ============================================================ */
+.ai-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 4px;
+}
+
+.ai-chip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  font-size: 12px;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all var(--transition);
+  user-select: none;
+}
+
+.ai-chip:hover { border-color: var(--border-mid); color: var(--text-primary); }
+
+.ai-chip.active {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.08);
+  color: var(--gold);
+  font-weight: 500;
+}
+
+/* ============================================================
+   ACTION BUTTONS
+   ============================================================ */
+.actions-row {
+  display: flex;
+  gap: 10px;
+  margin: 22px 0 0;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border-radius: var(--radius-md);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all var(--transition);
+  border: none;
+  padding: 13px 22px;
+  white-space: nowrap;
+}
+
+.btn-primary {
+  flex: 1;
+  background: linear-gradient(135deg, #C9A84C, #A07830);
+  color: #0D0D0F;
+  box-shadow: 0 4px 18px rgba(201,168,76,0.3);
+  min-width: 180px;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #E8C96B, #C9A84C);
+  box-shadow: 0 6px 24px rgba(201,168,76,0.45);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active { transform: translateY(0); }
+
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: var(--bg-card);
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+}
+
+.btn-secondary:hover {
+  border-color: var(--border-mid);
+  color: var(--text-primary);
+  background: var(--bg-hover);
+}
+
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border: 1px solid var(--border);
+  padding: 13px 16px;
+}
+
+.btn-ghost:hover { color: var(--text-muted); border-color: var(--border-mid); }
+
+/* ============================================================
+   OUTPUT
+   ============================================================ */
+.output-section {
+  display: none;
+  animation: fadeSlideUp 0.35s ease;
+}
+
+.output-section.visible { display: block; }
+
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.output-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-card), var(--shadow-glow);
+}
+
+.output-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(201,168,76,0.04);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.output-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gold);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.output-meta {
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+.output-actions {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+
+.output-actions .btn {
+  padding: 8px 14px;
+  font-size: 12px;
+}
+
+.output-body {
+  padding: 22px;
+  max-height: 480px;
+  overflow-y: auto;
+}
+
+#prompt-output {
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.75;
+  color: var(--text-primary);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.output-body::-webkit-scrollbar { width: 5px; }
+.output-body::-webkit-scrollbar-track { background: transparent; }
+.output-body::-webkit-scrollbar-thumb {
+  background: var(--border-mid);
+  border-radius: 4px;
+}
+
+/* Syntax highlight in output */
+.prompt-section-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+  margin: 14px 0 4px;
+}
+
+.prompt-section-label:first-child { margin-top: 0; }
+
+/* ============================================================
+   CHAR COUNT BADGE
+   ============================================================ */
+.output-footer {
+  padding: 12px 22px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.char-badge {
+  font-size: 12px;
+  color: var(--text-muted);
+}
+
+.compat-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.compat-tag {
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+.toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--gold);
+  color: #0D0D0F;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 12px 22px;
+  border-radius: 30px;
+  box-shadow: 0 8px 28px rgba(0,0,0,0.3);
+  transition: transform 0.3s cubic-bezier(.34,1.56,.64,1);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.toast.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ============================================================
+   LOADER
+   ============================================================ */
+.btn-primary .spinner {
+  display: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(13,13,15,0.3);
+  border-top-color: #0D0D0F;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+.btn-primary.loading .spinner { display: block; }
+.btn-primary.loading .btn-label { display: none; }
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ============================================================
+   FOOTER
+   ============================================================ */
+footer {
+  text-align: center;
+  padding: 28px 0 16px;
+  font-size: 11px;
+  color: var(--text-dim);
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 600px) {
+  .card { padding: 18px 16px; }
+  .style-grid { grid-template-columns: 1fr 1fr; }
+  .actions-row { flex-direction: column; }
+  .btn-primary { min-width: unset; }
+  h1 { font-size: 24px; }
+  .theme-toggle { position: static; margin: 12px auto 0; }
+  header { padding-top: 24px; }
+  .output-topbar { flex-direction: column; align-items: flex-start; }
+}
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<div class="page-wrap">
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header>
+    <button class="theme-toggle" id="themeToggle" aria-label="Alternar tema">
+      <span class="theme-icon" id="themeIcon">☀️</span>
+      <span id="themeLabel">Modo claro</span>
+    </button>
+
+    <div class="header-eyebrow">
+      ✦ Prompt Master Ultra 2.0 ✦
+    </div>
+
+    <h1>Gerador de <span>Imagens Sagradas</span><br>para Stories</h1>
+
+    <p class="header-sub">
+      Motor de criatividade dinâmica · Destaque semântico automático · Composição profissional de texto sobreposto —
+      prompts prontos para Midjourney, DALL·E, Flux, Firefly e muito mais.
+    </p>
+  </header>
+
+  <!-- ============================================================
+       CAMPO 1 — VERSÍCULO (OBRIGATÓRIO)
+       ============================================================ -->
+  <div class="card" id="card-versiculo">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="card-icon" aria-hidden="true">📖</div>
+        <div>
+          <div class="card-label-text">Versículo bíblico</div>
+          <div class="card-sub">Cole o texto completo com a referência</div>
+        </div>
+      </div>
+      <span class="badge-required">Obrigatório</span>
+    </div>
+
+    <textarea
+      id="versiculo"
+      rows="5"
+      maxlength="1200"
+      aria-label="Versículo bíblico"
+      placeholder="Cole aqui o versículo completo em Português do Brasil, incluindo a referência.&#10;&#10;Exemplo: &quot;Eis que estou à porta e bato; se alguém ouvir a minha voz e abrir a porta, entrarei em sua casa e cearei com ele, e ele comigo.&quot; — Apocalipse 3:20"
+    ></textarea>
+    <div class="char-counter">
+      <span id="versiculo-count">0</span> / 1200 caracteres
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CAMPO 2 — DESCRIÇÃO OPCIONAL
+       ============================================================ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="card-icon" aria-hidden="true">✏️</div>
+        <div>
+          <div class="card-label-text">Intenção visual</div>
+          <div class="card-sub">Descreva elementos, atmosfera ou cena desejada</div>
+        </div>
+      </div>
+      <span class="badge-optional">Opcional</span>
+    </div>
+
+    <textarea
+      id="descricao"
+      rows="3"
+      maxlength="600"
+      aria-label="Descrição visual opcional"
+      placeholder="Exemplos: &quot;Jesus caminhando sobre as águas ao entardecer&quot; · &quot;Paisagem montanhosa com luz divina dourada&quot; · &quot;Estilo pintura renascentista com tons quentes&quot; · &quot;Fundo céu nublado com raios de luz&quot;"
+    ></textarea>
+    <div class="char-counter">
+      <span id="desc-count">0</span> / 600 caracteres
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CAMPO 3 — IMAGENS DE REFERÊNCIA
+       ============================================================ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="card-icon" aria-hidden="true">🖼️</div>
+        <div>
+          <div class="card-label-text">Imagens de referência</div>
+          <div class="card-sub">Inspiram composição, paleta e estilo — não são copiadas</div>
+        </div>
+      </div>
+      <span class="badge-optional">Opcional</span>
+    </div>
+
+    <div class="upload-area" id="uploadArea">
+      <input type="file" id="fileInput" accept="image/*" multiple aria-label="Selecionar imagens de referência">
+      <div class="upload-icon" aria-hidden="true">📎</div>
+      <div class="upload-label">Arraste imagens ou <span class="upload-gold">clique para selecionar</span></div>
+      <div class="upload-hint">PNG, JPG, WEBP · Múltiplas imagens aceitas · Até 5 arquivos</div>
+    </div>
+
+    <div class="preview-grid" id="previewGrid"></div>
+  </div>
+
+  <!-- ============================================================
+       DIREÇÃO ARTÍSTICA
+       ============================================================ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="card-icon" aria-hidden="true">🎨</div>
+        <div>
+          <div class="card-label-text">Direção artística</div>
+          <div class="card-sub">Deixe em branco para seleção automática pelo versículo</div>
+        </div>
+      </div>
+      <span class="badge-optional">Opcional</span>
+    </div>
+
+    <div class="style-grid" id="styleGrid" role="group" aria-label="Estilos artísticos">
+      <div class="style-opt" data-style="Cinematic Realism" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="style-emoji">🎬</span>
+        <span class="style-name">Cinematic Realism</span>
+        <span class="style-desc">Fotografia ultra realista de cinema</span>
+      </div>
+      <div class="style-opt" data-style="Renaissance Inspired" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="style-emoji">🖌️</span>
+        <span class="style-name">Renaissance</span>
+        <span class="style-desc">Inspirado em pinturas clássicas</span>
+      </div>
+      <div class="style-opt" data-style="Epic Biblical" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="style-emoji">⚡</span>
+        <span class="style-name">Epic Biblical</span>
+        <span class="style-desc">Grandioso e inspirador</span>
+      </div>
+      <div class="style-opt" data-style="Sacred Atmosphere" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="style-emoji">✨</span>
+        <span class="style-name">Sacred Atmosphere</span>
+        <span class="style-desc">Atmosfera celestial e contemplativa</span>
+      </div>
+      <div class="style-opt" data-style="Golden Hour" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="style-emoji">🌅</span>
+        <span class="style-name">Golden Hour</span>
+        <span class="style-desc">Luz dourada cinematográfica</span>
+      </div>
+      <div class="style-opt" data-style="Fine Art Christian" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="style-emoji">🏛️</span>
+        <span class="style-name">Fine Art Christian</span>
+        <span class="style-desc">Arte cristã premium</span>
+      </div>
+      <div class="style-opt" data-style="Modern Editorial" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="style-emoji">📰</span>
+        <span class="style-name">Modern Editorial</span>
+        <span class="style-desc">Visual contemporâneo de revista</span>
+      </div>
+      <div class="style-opt" data-style="Documentary Biblical" tabindex="0" role="checkbox" aria-checked="false">
+        <span class="style-emoji">📷</span>
+        <span class="style-name">Documentary</span>
+        <span class="style-desc">Representação histórica realista</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       CENÁRIO / AMBIENTAÇÃO
+       ============================================================ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="card-icon" aria-hidden="true">🏞️</div>
+        <div>
+          <div class="card-label-text">Cenário e ambientação</div>
+          <div class="card-sub">Deixe em branco para seleção automática pelo versículo</div>
+        </div>
+      </div>
+      <span class="badge-optional">Opcional</span>
+    </div>
+
+    <div class="scenario-categories" id="scenarioCategories" role="group" aria-label="Categorias de cenário">
+
+      <div>
+        <div class="scenario-cat-label"><span class="cat-emoji">📜</span> Cenários bíblicos clássicos</div>
+        <div class="scenario-grid">
+          <div class="scenario-opt" data-scenario="Israel Antigo, com arquitetura, vestimentas e paisagem autênticas do período bíblico" tabindex="0" role="checkbox" aria-checked="false">🏺 Israel Antigo</div>
+          <div class="scenario-opt" data-scenario="Jerusalém Antiga, muralhas de pedra, ruas históricas e arquitetura do século I" tabindex="0" role="checkbox" aria-checked="false">🏛️ Jerusalém Antiga</div>
+          <div class="scenario-opt" data-scenario="deserto vasto e árido, dunas e céu imenso, luz solar intensa" tabindex="0" role="checkbox" aria-checked="false">🏜️ Deserto</div>
+          <div class="scenario-opt" data-scenario="Monte Sinai, terreno rochoso e majestoso, céu dramático ao fundo" tabindex="0" role="checkbox" aria-checked="false">⛰️ Monte Sinai</div>
+          <div class="scenario-opt" data-scenario="Mar da Galileia ao entardecer, águas calmas refletindo o céu" tabindex="0" role="checkbox" aria-checked="false">🌊 Mar da Galileia</div>
+          <div class="scenario-opt" data-scenario="Belém antiga, vilarejo simples sob céu estrelado" tabindex="0" role="checkbox" aria-checked="false">⭐ Belém</div>
+          <div class="scenario-opt" data-scenario="Nazaré antiga, colinas e casas de pedra do período bíblico" tabindex="0" role="checkbox" aria-checked="false">🏘️ Nazaré</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="scenario-cat-label"><span class="cat-emoji">🌿</span> Cenários naturais</div>
+        <div class="scenario-grid">
+          <div class="scenario-opt" data-scenario="montanhas majestosas e imponentes, picos cobertos de névoa, escala monumental" tabindex="0" role="checkbox" aria-checked="false">🏔️ Montanhas majestosas</div>
+          <div class="scenario-opt" data-scenario="cachoeira monumental, água cristalina em queda, névoa de água suspensa no ar" tabindex="0" role="checkbox" aria-checked="false">💦 Cachoeiras monumentais</div>
+          <div class="scenario-opt" data-scenario="lago cristalino emoldurado por montanhas, reflexo perfeito do céu na água" tabindex="0" role="checkbox" aria-checked="false">🏞️ Lagos cristalinos</div>
+          <div class="scenario-opt" data-scenario="campo florido extenso, flores coloridas ao vento, luz suave" tabindex="0" role="checkbox" aria-checked="false">🌸 Campos floridos</div>
+          <div class="scenario-opt" data-scenario="floresta exuberante e densa, luz filtrada entre as árvores, atmosfera contemplativa" tabindex="0" role="checkbox" aria-checked="false">🌳 Florestas exuberantes</div>
+          <div class="scenario-opt" data-scenario="praia paradisíaca, areia branca, águas turquesa e horizonte infinito" tabindex="0" role="checkbox" aria-checked="false">🏖️ Praias paradisíacas</div>
+          <div class="scenario-opt" data-scenario="falésia costeira dramática à beira-mar, ondas batendo nas rochas" tabindex="0" role="checkbox" aria-checked="false">🪨 Falésias costeiras</div>
+          <div class="scenario-opt" data-scenario="campo dourado ao pôr do sol, trigo ondulando ao vento, luz quente rasante" tabindex="0" role="checkbox" aria-checked="false">🌾 Campos dourados ao pôr do sol</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="scenario-cat-label"><span class="cat-emoji">☁️</span> Cenários celestiais</div>
+        <div class="scenario-grid">
+          <div class="scenario-opt" data-scenario="céus gloriosos e infinitos, nuvens douradas e luz celestial radiante" tabindex="0" role="checkbox" aria-checked="false">☁️ Céus gloriosos</div>
+          <div class="scenario-opt" data-scenario="trono celestial majestoso, luz divina intensa emanando do centro" tabindex="0" role="checkbox" aria-checked="false">👑 Trono celestial</div>
+          <div class="scenario-opt" data-scenario="portões dourados monumentais, luz radiante atravessando as portas" tabindex="0" role="checkbox" aria-checked="false">🚪 Portões dourados</div>
+          <div class="scenario-opt" data-scenario="atmosfera angelical etérea, luz suave e partículas brilhantes flutuantes" tabindex="0" role="checkbox" aria-checked="false">👼 Atmosfera angelical</div>
+          <div class="scenario-opt" data-scenario="luz divina intensa e volumétrica, raios celestiais atravessando nuvens" tabindex="0" role="checkbox" aria-checked="false">✨ Luz divina intensa</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="scenario-cat-label"><span class="cat-emoji">🏙️</span> Cenários contemporâneos</div>
+        <div class="scenario-grid">
+          <div class="scenario-opt" data-scenario="cidade moderna ao entardecer, skyline iluminado, atmosfera contemplativa" tabindex="0" role="checkbox" aria-checked="false">🏙️ Cidade moderna</div>
+          <div class="scenario-opt" data-scenario="parque urbano tranquilo, árvores e caminhos, luz suave de fim de tarde" tabindex="0" role="checkbox" aria-checked="false">🌳 Parque urbano</div>
+          <div class="scenario-opt" data-scenario="estrada panorâmica se estendendo até o horizonte, céu aberto e dramático" tabindex="0" role="checkbox" aria-checked="false">🛣️ Estrada panorâmica</div>
+          <div class="scenario-opt" data-scenario="horizonte metropolitano visto de cima, luzes da cidade ao anoitecer" tabindex="0" role="checkbox" aria-checked="false">🌆 Horizonte metropolitano</div>
+          <div class="scenario-opt" data-scenario="ambiente minimalista contemporâneo, composição limpa e elegante, espaço negativo equilibrado" tabindex="0" role="checkbox" aria-checked="false">⬜ Ambiente minimalista</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="scenario-cat-label"><span class="cat-emoji">🎬</span> Cenários cinematográficos</div>
+        <div class="scenario-grid">
+          <div class="scenario-opt" data-scenario="composição épica cinematográfica, escala monumental, atmosfera grandiosa de filme" tabindex="0" role="checkbox" aria-checked="false">🎬 Épicos cinematográficos</div>
+          <div class="scenario-opt" data-scenario="cena ultra realista com qualidade de produção de cinema, detalhes fotográficos extremos" tabindex="0" role="checkbox" aria-checked="false">🎥 Ultra realistas</div>
+          <div class="scenario-opt" data-scenario="paisagem inspirada em cinema épico, cores cinematográficas, composição de still de filme" tabindex="0" role="checkbox" aria-checked="false">🎞️ Paisagens inspiradas em filmes</div>
+          <div class="scenario-opt" data-scenario="ambiente contemplativo e silencioso, atmosfera introspectiva, ritmo visual lento" tabindex="0" role="checkbox" aria-checked="false">🤍 Ambientes contemplativos</div>
+        </div>
+      </div>
+
+      <div>
+        <div class="scenario-cat-label"><span class="cat-emoji">✍️</span> Cenário personalizado</div>
+        <div class="scenario-grid">
+          <div class="scenario-opt" data-scenario="__custom__" tabindex="0" role="checkbox" aria-checked="false">✍️ Escrever meu próprio cenário</div>
+        </div>
+        <div class="scenario-custom-wrap" id="scenarioCustomWrap">
+          <textarea id="scenarioCustom" rows="2" maxlength="400" aria-label="Cenário personalizado" placeholder="Descreva livremente o cenário desejado. Ex: &quot;Topo de penhasco voltado para o oceano, ao amanhecer, com névoa baixa&quot;"></textarea>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================================
+       IA DESTINO
+       ============================================================ -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-title">
+        <div class="card-icon" aria-hidden="true">🤖</div>
+        <div>
+          <div class="card-label-text">IA de destino</div>
+          <div class="card-sub">O prompt será otimizado para a ferramenta selecionada</div>
+        </div>
+      </div>
+      <span class="badge-optional">Opcional</span>
+    </div>
+
+    <div class="ai-grid" id="aiGrid" role="group" aria-label="Ferramentas de IA">
+      <div class="ai-chip active" data-ai="Midjourney" tabindex="0" role="checkbox" aria-checked="true">🎯 Midjourney</div>
+      <div class="ai-chip" data-ai="DALL·E 3" tabindex="0" role="checkbox" aria-checked="false">⚡ DALL·E 3</div>
+      <div class="ai-chip" data-ai="Stable Diffusion" tabindex="0" role="checkbox" aria-checked="false">🔬 Stable Diffusion</div>
+      <div class="ai-chip" data-ai="Adobe Firefly" tabindex="0" role="checkbox" aria-checked="false">🔥 Adobe Firefly</div>
+      <div class="ai-chip" data-ai="Ideogram" tabindex="0" role="checkbox" aria-checked="false">💡 Ideogram</div>
+      <div class="ai-chip" data-ai="Leonardo AI" tabindex="0" role="checkbox" aria-checked="false">🦁 Leonardo AI</div>
+      <div class="ai-chip" data-ai="Flux" tabindex="0" role="checkbox" aria-checked="false">⚙️ Flux</div>
+      <div class="ai-chip" data-ai="ChatGPT" tabindex="0" role="checkbox" aria-checked="false">💬 ChatGPT</div>
+      <div class="ai-chip" data-ai="Gemini" tabindex="0" role="checkbox" aria-checked="false">🔷 Gemini</div>
+      <div class="ai-chip" data-ai="Google Flow" tabindex="0" role="checkbox" aria-checked="false">🎞️ Google Flow</div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       AÇÕES
+       ============================================================ -->
+  <div class="actions-row">
+    <button class="btn btn-primary" id="btnGerar" onclick="gerarPrompt()">
+      <div class="spinner" aria-hidden="true"></div>
+      <span class="btn-label">✦ Gerar Prompt Profissional</span>
+    </button>
+    <button class="btn btn-ghost" onclick="limpar()" aria-label="Limpar todos os campos">
+      🗑 Limpar
+    </button>
+  </div>
+
+  <!-- ============================================================
+       OUTPUT
+       ============================================================ -->
+  <div class="output-section" id="outputSection">
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-label">Prompt gerado</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="output-card">
+      <div class="output-topbar">
+        <div class="output-title">
+          ✦ Prompt Master Ultra 2.0 — Profissional
+        </div>
+        <div class="output-meta" id="outputMeta"></div>
+        <div class="output-actions">
+          <button class="btn btn-secondary" onclick="copiarPrompt()" aria-label="Copiar prompt">
+            📋 Copiar
+          </button>
+          <button class="btn btn-ghost" onclick="downloadPrompt()" aria-label="Baixar como arquivo de texto">
+            ⬇ Baixar .txt
+          </button>
+        </div>
+      </div>
+
+      <div class="output-body">
+        <div id="prompt-output" aria-live="polite" aria-label="Prompt gerado"></div>
+      </div>
+
+      <div class="output-footer">
+        <div class="char-badge" id="outputCharCount"></div>
+        <div class="compat-tags" id="compatTags"></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    Prompt Master Ultra 2.0 · Gerador profissional de imagens bíblicas IA para Stories
+  </footer>
+
+</div><!-- /page-wrap -->
+
+<script>
+/* ============================================================
+   STATE
+   ============================================================ */
+let selectedStyle    = '';
+let selectedAI       = 'Midjourney';
+let refImages        = [];
+let selectedScenario = '';
+
+/* ============================================================
+   THEME TOGGLE
+   ============================================================ */
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon   = document.getElementById('themeIcon');
+const themeLabel  = document.getElementById('themeLabel');
+let isDark = true;
+
+themeToggle.addEventListener('click', () => {
+  isDark = !isDark;
+  document.body.classList.toggle('light', !isDark);
+  themeIcon.textContent  = isDark ? '☀️' : '🌙';
+  themeLabel.textContent = isDark ? 'Modo claro' : 'Modo escuro';
+});
+
+/* ============================================================
+   CHAR COUNTERS
+   ============================================================ */
+function bindCounter(inputId, countId) {
+  const el = document.getElementById(inputId);
+  const ct = document.getElementById(countId);
+  el.addEventListener('input', () => { ct.textContent = el.value.length; });
+}
+bindCounter('versiculo', 'versiculo-count');
+bindCounter('descricao',  'desc-count');
+
+/* ============================================================
+   STYLE SELECTOR
+   ============================================================ */
+document.querySelectorAll('.style-opt').forEach(opt => {
+  function toggleStyle() {
+    const val = opt.dataset.style;
+    if (selectedStyle === val) {
+      opt.classList.remove('active');
+      opt.setAttribute('aria-checked', 'false');
+      selectedStyle = '';
+    } else {
+      document.querySelectorAll('.style-opt').forEach(o => {
+        o.classList.remove('active');
+        o.setAttribute('aria-checked', 'false');
+      });
+      opt.classList.add('active');
+      opt.setAttribute('aria-checked', 'true');
+      selectedStyle = val;
+    }
+  }
+  opt.addEventListener('click', toggleStyle);
+  opt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleStyle(); } });
+});
+
+/* ============================================================
+   AI CHIP SELECTOR
+   ============================================================ */
+document.querySelectorAll('.ai-chip').forEach(chip => {
+  function toggleAI() {
+    document.querySelectorAll('.ai-chip').forEach(c => {
+      c.classList.remove('active');
+      c.setAttribute('aria-checked', 'false');
+    });
+    chip.classList.add('active');
+    chip.setAttribute('aria-checked', 'true');
+    selectedAI = chip.dataset.ai;
+  }
+  chip.addEventListener('click', toggleAI);
+  chip.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleAI(); } });
+});
+
+/* ============================================================
+   SCENARIO SELECTOR
+   ============================================================ */
+const scenarioCustomWrap = document.getElementById('scenarioCustomWrap');
+const scenarioCustomInput = document.getElementById('scenarioCustom');
+
+document.querySelectorAll('.scenario-opt').forEach(opt => {
+  function toggleScenario() {
+    const val = opt.dataset.scenario;
+    const isCustom = val === '__custom__';
+    const wasActive = opt.classList.contains('active');
+
+    document.querySelectorAll('.scenario-opt').forEach(o => {
+      o.classList.remove('active');
+      o.setAttribute('aria-checked', 'false');
+    });
+
+    if (wasActive) {
+      selectedScenario = '';
+      scenarioCustomWrap.classList.remove('visible');
+      return;
+    }
+
+    opt.classList.add('active');
+    opt.setAttribute('aria-checked', 'true');
+
+    if (isCustom) {
+      scenarioCustomWrap.classList.add('visible');
+      selectedScenario = scenarioCustomInput.value.trim();
+      scenarioCustomInput.focus();
+    } else {
+      scenarioCustomWrap.classList.remove('visible');
+      selectedScenario = val;
+    }
+  }
+  opt.addEventListener('click', toggleScenario);
+  opt.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggleScenario(); } });
+});
+
+scenarioCustomInput.addEventListener('input', () => {
+  const customOpt = document.querySelector('.scenario-opt[data-scenario="__custom__"]');
+  if (customOpt && customOpt.classList.contains('active')) {
+    selectedScenario = scenarioCustomInput.value.trim();
+  }
+});
+
+/* ============================================================
+   IMAGE UPLOAD
+   ============================================================ */
+const fileInput  = document.getElementById('fileInput');
+const uploadArea = document.getElementById('uploadArea');
+const previewGrid = document.getElementById('previewGrid');
+
+fileInput.addEventListener('change', handleFiles);
+
+uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.classList.add('drag-over'); });
+uploadArea.addEventListener('dragleave', () => uploadArea.classList.remove('drag-over'));
+uploadArea.addEventListener('drop', e => {
+  e.preventDefault();
+  uploadArea.classList.remove('drag-over');
+  const files = Array.from(e.dataTransfer.files).filter(f => f.type.startsWith('image/'));
+  addImages(files);
+});
+
+function handleFiles(e) {
+  addImages(Array.from(e.target.files));
+  fileInput.value = '';
+}
+
+function addImages(files) {
+  files.slice(0, 5 - refImages.length).forEach(file => {
+    const reader = new FileReader();
+    reader.onload = ev => {
+      const obj = { name: file.name, src: ev.target.result };
+      refImages.push(obj);
+      renderPreviews();
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function renderPreviews() {
+  previewGrid.innerHTML = '';
+  refImages.forEach((img, i) => {
+    const div = document.createElement('div');
+    div.className = 'preview-item';
+    div.innerHTML = `<img src="${img.src}" alt="Referência ${i+1}">
+      <button class="preview-remove" aria-label="Remover imagem ${i+1}" onclick="removeImage(${i})">✕</button>`;
+    previewGrid.appendChild(div);
+  });
+}
+
+function removeImage(i) {
+  refImages.splice(i, 1);
+  renderPreviews();
+}
+
+/* ============================================================
+   ANÁLISE AUTOMÁTICA DO VERSÍCULO — PROMPT MASTER ULTRA 2.0
+   ============================================================ */
+
+// Motor de Criatividade Dinâmica — garante variação a cada geração
+let _geracaoIndex = 0;
+
+function getVariacaoDinamica() {
+  _geracaoIndex++;
+  const enquadramentos = [
+    'plano aberto com escala monumental, câmera baixa apontando para o céu',
+    'close dramático com bokeh profundo no fundo, foco no elemento central',
+    'ângulo holandês suave (dutch angle) criando tensão visual e dinamismo',
+    'plano médio com profundidade de campo equilibrada e perspectiva imersiva',
+    'contra-plongée majestoso, câmera de baixo para cima, céu dominando o quadro',
+    'plano americano centrado, composição clássica e equilibrada',
+    'perspectiva em primeiro plano com elemento desfocado emoldurando a cena',
+  ];
+  const distanciasFocais = [
+    'lente grande-angular 16mm, distorção mínima, céu expansivo',
+    'lente padrão 35mm, perspectiva natural e imersiva',
+    'teleobjetiva 85mm, compressão de perspectiva, bokeh cremoso',
+    'lente 24mm, campo visual amplo, profundidade atmosférica',
+    'lente 50mm, perspectiva natural próxima ao olho humano',
+  ];
+  const elementosSecundarios = [
+    'partículas de poeira dourada flutuando nos feixes de luz',
+    'névoa sutil ao fundo criando profundidade atmosférica',
+    'reflexos de luz na superfície de elementos naturais (água, pedras, folhagens)',
+    'flores ou vegetação do período bíblico em primeiro plano desfocado',
+    'raios de luz crepuscular atravessando nuvens dramáticas',
+    'pássaros distantes em voo silhuetados contra o céu',
+  ];
+
+  const i = _geracaoIndex;
+  return {
+    enquadramento: enquadramentos[i % enquadramentos.length],
+    distanciaFocal: distanciasFocais[i % distanciasFocais.length],
+    elementoSecundario: elementosSecundarios[i % elementosSecundarios.length],
+  };
+}
+
+function analisarVersiculo(texto) {
+  const t = texto.toLowerCase();
+
+  // NÍVEL 2 — EMOÇÃO DOMINANTE
+  let emocao = 'Esperança';
+  if (/paz|descanso|quieto|tranquil|sosseg/.test(t))              emocao = 'Paz';
+  else if (/am[ao]r|misericórd|bondade/.test(t))                  emocao = 'Amor';
+  else if (/fé|crer|confiar|confiança|cren/.test(t))              emocao = 'Fé';
+  else if (/glória|glorios|majesta|magnificên/.test(t))           emocao = 'Glória';
+  else if (/salvaç|salvo|remir|redenç|salvador/.test(t))          emocao = 'Salvação';
+  else if (/alegria|júbilo|regozij|festa/.test(t))                emocao = 'Alegria';
+  else if (/corajem|forte|não tema|não temas|ânimo/.test(t))      emocao = 'Coragem';
+  else if (/perdão|perdoa|pecado|remis/.test(t))                   emocao = 'Perdão';
+  else if (/graça|graças|gratidão|obrigad/.test(t))               emocao = 'Gratidão';
+  else if (/vitória|venc|triunf/.test(t))                         emocao = 'Vitória';
+  else if (/adoraç|louvor|louva|bendito|bendiz/.test(t))          emocao = 'Adoração';
+  else if (/santas?|santo|santidad|pureza/.test(t))               emocao = 'Santidade';
+  else if (/persever|persist|resistir|firm/.test(t))              emocao = 'Perseverança';
+  else if (/arrepend|voltai|tornai|conversão/.test(t))            emocao = 'Arrependimento';
+  else if (/reino|rei dos reis|governar/.test(t))                 emocao = 'Reino';
+
+  // Paleta inteligente por emoção
+  const paletas = {
+    'Esperança':     'dourado quente #C9A84C, branco puro #FFFFFF, azul celeste #7BB8E0 — harmonia luminosa e esperançosa',
+    'Paz':           'azul celeste suave #A8D8EA, branco névoa #F5F5F0, lilás discreto #C9B8D4 — paleta serena e contemplativa',
+    'Amor':          'bege dourado #E8C99A, rosa terracota suave #E8B4A0, ouro quente #D4A853 — calor e acolhimento',
+    'Fé':            'dourado intenso #C9A84C, azul profundo #1A2E5E, âmbar #D4841A — profundidade e convicção',
+    'Glória':        'branco celestial puro, ouro intenso #FFD700, luz radiante divina sobrenatural — magnificência absoluta',
+    'Salvação':      'vermelho carmesim profundo #8B1A1A contrastado com luz branca sobrenatural, ouro redentor #C9A84C',
+    'Alegria':       'amarelo luz #F5D76E, verde primavera #7BC67E, branco alegre — vivacidade e leveza',
+    'Coragem':       'azul real profundo #1A3A6B, prata nobre #C0C0C0, luz dramática branca contrastada',
+    'Perdão':        'roxo profundo #4B0082, luz branca suave redentora, dourado de graça #C9A84C',
+    'Gratidão':      'verde sálvia #8FBC8F, dourado suave #D4A853, tons terrosos quentes — gratidão terrena',
+    'Vitória':       'dourado triunfal #FFD700, branco celestial, luz intensa e radiante — triunfo absoluto',
+    'Adoração':      'roxo real #6A0DAD, dourado #C9A84C, luz volumétrica divina — reverência e majestade',
+    'Santidade':     'branco imaculado, dourado suave, azul etéreo — pureza e transcendência',
+    'Perseverança':  'bronze #CD7F32, pedra cinza nobre, luz dourada determinada ao fundo',
+    'Arrependimento':'contraste dramático de sombra e luz divina, cinza profundo com raio de luz transformador',
+    'Reino':         'púrpura real #6A0DAD, dourado imperial #FFD700, pedras preciosas — realeza divina',
+  };
+
+  // NÍVEL 3 — DETECTOR DE CENAS: Personagens
+  const personagens = [];
+  if (/jesus|cristo|filho do homem|filho de deus/.test(t))
+    personagens.push('Jesus Cristo — homem judeu do século I, cabelos escuros, barba, vestes históricas de linho e lã, aparência digna e respeitosa, sem idealizações modernas');
+  if (/deus pai|pai celestial|todo-poderoso|altíssimo/.test(t))
+    personagens.push('presença do Pai representada por luz sobrenatural e glória divina, não por forma humana');
+  if (/anjo|anjos|querubim|serafim/.test(t))
+    personagens.push('anjos em vestes de luz branca radiante, presença majestosa e solene');
+  if (/\bpastor\b/.test(t))
+    personagens.push('pastor com cajado em madeira, vestes de lã, ambiente pastoral bíblico');
+  if (/profeta/.test(t))
+    personagens.push('profeta em vestes antigas do período veterotestamentário, expressão de seriedade');
+  if (/rei|soberano/.test(t))
+    personagens.push('figura real em vestes do período bíblico, postura de autoridade');
+  if (/discípulo|apóstolo/.test(t))
+    personagens.push('discípulos em vestes do século I, grupo em postura de atenção e reverência');
+  if (/povo|multidão|nações|todos os povos/.test(t))
+    personagens.push('multidão diversa em vestes do período bíblico, expressões de admiração e contemplação');
+
+  // NÍVEL 3 — DETECTOR DE CENAS: Objetos simbólicos
+  const objetosDetectados = [];
+  if (/cruz/.test(t))      objetosDetectados.push('cruz de madeira antiga, detalhe autêntico');
+  if (/\bporta\b/.test(t)) objetosDetectados.push('porta antiga de madeira talhada, com luz quente do interior');
+  if (/coroa/.test(t))     objetosDetectados.push('coroa de rei ou coroa de espinhos');
+  if (/pão|mesa/.test(t))  objetosDetectados.push('pão partido sobre mesa de madeira rústica');
+  if (/cálice|vinho/.test(t)) objetosDetectados.push('cálice de vinho do período bíblico');
+  if (/cajado/.test(t))    objetosDetectados.push('cajado de pastor em madeira natural');
+  if (/livro|rolo|escrit/.test(t)) objetosDetectados.push('rolo de pergaminho ou livro antigo');
+
+  // Ambiente — prioriza escolha manual; senão detecta automaticamente
+  let ambiente;
+  let ambienteEhBiblico = true;
+  if (selectedScenario) {
+    ambiente = selectedScenario;
+    ambienteEhBiblico = false;
+  } else {
+    ambiente = 'paisagem bíblica serena com horizonte amplo, pedras e vegetação do Oriente Médio antigo';
+    if (/monte|montanha|alto|pico/.test(t))           ambiente = 'topo de monte rochoso majestoso com horizonte vasto, vegetação esparsa, céu monumental';
+    else if (/mar|água|rio|lago|pescad/.test(t))      ambiente = 'margem do Mar da Galileia ao entardecer, barcos de pesca à distância, reflexos dourados na água tranquila';
+    else if (/deserto|árido|seco/.test(t))            ambiente = 'deserto árido e vasto com dunas de areia dourada se estendendo ao infinito sob luz solar intensa';
+    else if (/templo|santuário|tabernáculo/.test(t))  ambiente = 'interior de templo antigo com colunas de pedra calcária, incenso, luz penetrando por frestas altas';
+    else if (/jardim|horto|verde/.test(t))            ambiente = 'jardim exuberante com oliveiras antigas, flores silvestres, luz filtrada entre folhagens densas';
+    else if (/\bporta\b|casa|morada/.test(t))         ambiente = 'exterior de residência judaica antiga ao crepúsculo, porta de madeira escura com luz dourada do interior';
+    else if (/céu|nuvem|nuvens|firmamento/.test(t))   ambiente = 'céu dramático e monumental com nuvens esculpidas em tons dourados e púrpura, raios de luz divina atravessando as camadas';
+    else if (/campo|prado|relva|ovelha/.test(t))      ambiente = 'campo verde e aberto ao entardecer, ondulando suavemente ao vento, horizonte amplo';
+    else if (/\bmar\b|profund/.test(t))               ambiente = 'costa rochosa com ondas e espuma, horizonte infinito sob céu dramático';
+    else if (/cidade|povo|rua/.test(t))               ambiente = 'cidade antiga de pedra calcária, ruas estreitas, atmosfera histórica do século I';
+    else if (/cruz|gólgota|calvário/.test(t))         ambiente = 'monte do Calvário ao entardecer, horizonte tingido de vermelho e dourado';
+    else if (/sinal|aparecer|vindo|glória/.test(t))   ambiente = 'céu monumental e sobrenatural com nuvens douradas e púrpura, luz irradiando do centro de forma sobrenatural';
+  }
+
+  // Iluminação por emoção
+  const iluminacoes = {
+    'Esperança':     'luz dourada volumétrica vinda do horizonte, raios de sol atravessando nuvens, partículas de luz visíveis',
+    'Paz':           'luz suave difusa de final de tarde, tons pastéis, névoa delicada, sem sombras duras',
+    'Amor':          'luz quente de fim de tarde, golden hour cinematográfico, atmosfera acolhedora e envolvente',
+    'Fé':            'raios de luz divina descendo do céu, contraste dramático claro-escuro à la Caravaggio',
+    'Glória':        'luz celestial intensa e sobrenatural, branco puro emanando do centro, irradiação divina total',
+    'Salvação':      'feixe de luz divina cortando escuridão profunda, forte contraste dramático, esperança emergindo',
+    'Alegria':       'luz natural alegre de manhã cedo, cores vivas, atmosfera festiva e luminosa',
+    'Coragem':       'luz dramática contrastada, sombras fortes, raio de luz único no centro da cena',
+    'Perdão':        'luz suave e misericordiosa, penumbra acolhedora, claridade suave emergindo das sombras',
+    'Gratidão':      'luz dourada de pôr do sol, tons quentes sobre a terra, atmosfera de gratidão e beleza',
+    'Vitória':       'luz triunfal intensa e radiante, dourado, claridade celestial total, sem sombras dominantes',
+    'Adoração':      'luz divina volumétrica de alto a baixo, partículas de luz flutuantes, majestade sobrenatural',
+    'Santidade':     'luz branca etérea e pura, brilho sobrenatural suave, atmosfera de transcendência',
+    'Perseverança':  'luz lateral dramática e forte, sombras longas, determinação visual no contraste',
+    'Arrependimento':'contraste dramático: escuridão profunda com único feixe de luz redentora penetrando',
+    'Reino':         'luz imperial dourada e púrpura, magnificência celestial, profundidade atmosférica majestosa',
+  };
+
+  return {
+    emocao,
+    paleta: paletas[emocao] || paletas['Esperança'],
+    personagens,
+    objetosDetectados,
+    ambiente,
+    ambienteEhBiblico,
+    iluminacao: iluminacoes[emocao] || iluminacoes['Esperança'],
+  };
+}
+
+/* ============================================================
+   TIPOGRAFIA INTELIGENTE — BANCO COMPLETO ULTRA 2.0
+   ============================================================ */
+function getTipografia(emocao) {
+  const grupos = {
+    elegante:    {
+      nomes: ['Cinzel', 'Playfair Display', 'Cormorant Garamond'],
+      desc: 'serif clássica elegante, traços refinados, contraste de hastes — transmite reverência e nobreza',
+      estiloPosicao: 'centralizado verticalmente com alinhamento óptico, referência bíblica em tipo menor no rodapé'
+    },
+    moderna:     {
+      nomes: ['Montserrat', 'Poppins', 'Raleway'],
+      desc: 'sans-serif humanista moderna, limpa e geométrica, alta legibilidade em qualquer tamanho',
+      estiloPosicao: 'alinhamento à esquerda com margem generosa, referência bíblica em negrito leve abaixo'
+    },
+    manuscrita:  {
+      nomes: ['Great Vibes', 'Allura', 'Dancing Script'],
+      desc: 'caligráfica manuscrita premium, traço fluido e pessoal — evoca devoção e intimidade espiritual',
+      estiloPosicao: 'centralizado com variação de tamanho entre linhas, fluência visual suave'
+    },
+    impactante:  {
+      nomes: ['Oswald', 'League Spartan', 'Bebas Neue'],
+      desc: 'condensada e impactante, peso forte, alto contraste — presença visual imediata e poderosa',
+      estiloPosicao: 'centralizado com caixa alta nas palavras-chave, referência em caixa baixa elegante'
+    },
+    pergaminho:  {
+      nomes: ['IM Fell English', 'Libre Baskerville', 'Lora'],
+      desc: 'estilo bíblico clássico inspirado em pergaminho e texto antigo, serifa serifada com história',
+      estiloPosicao: 'alinhamento justificado com recuo na primeira linha, referência em itálico'
+    },
+    editorial:   {
+      nomes: ['Merriweather', 'PT Serif', 'Noto Serif'],
+      desc: 'editorial premium de revista cristã, legibilidade máxima em corpo de texto e título',
+      estiloPosicao: 'hierarquia clara: versículo em corpo médio, referência em destaque inferior'
+    },
+  };
+
+  const porEmocao = {
+    'Esperança':     'elegante',
+    'Paz':           'manuscrita',
+    'Amor':          'manuscrita',
+    'Fé':            'elegante',
+    'Glória':        'impactante',
+    'Salvação':      'impactante',
+    'Alegria':       'moderna',
+    'Coragem':       'impactante',
+    'Perdão':        'manuscrita',
+    'Gratidão':      'pergaminho',
+    'Vitória':       'impactante',
+    'Adoração':      'elegante',
+    'Santidade':     'pergaminho',
+    'Perseverança':  'impactante',
+    'Arrependimento':'elegante',
+    'Reino':         'editorial',
+  };
+
+  const grupoChave = porEmocao[emocao] || 'elegante';
+  const grupo = grupos[grupoChave];
+
+  return {
+    grupo: grupoChave,
+    fontes: grupo.nomes,
+    descricao: grupo.desc,
+    estiloPosicao: grupo.estiloPosicao,
+  };
+}
+
+/* ============================================================
+   MOTOR DE DESTAQUE SEMÂNTICO — ULTRA 2.0
+   ============================================================ */
+function getDestaqueVisual(emocao) {
+  const mapa = {
+    'Esperança':     'faixa horizontal translúcida dourada (#C9A84C, 35% opacidade) atrás do texto principal; palavras-chave (Deus, Jesus, Senhor, esperança, fé, vida) em escala 120% com peso bold e glow dourado suave (blur 8px)',
+    'Paz':           'overlay gradiente azul-branco translúcido (20% opacidade) sobre a área de texto; palavras-chave em itálico manuscrito levemente maior (115%), sem faixa dura',
+    'Amor':          'faixa aquecida em bege-rosado translúcido (30% opacidade) atrás do trecho central; palavras como amor, graça, misericórdia em peso semibold e cor levemente mais quente',
+    'Fé':            'faixa sólida elegante translúcida azul-escuro (40% opacidade) atrás de todo o bloco de texto; palavras-chave em branco puro com drop shadow forte para destaque cinematic',
+    'Glória':        'glow luminoso e radiante ao redor de todas as palavras-chave (blur 12px, cor #FFD700); faixa central dourada translúcida (45% opacidade); referência bíblica com borda dourada fina',
+    'Salvação':      'faixa estreita dourada (#C9A84C) atrás da referência bíblica; texto principal com drop shadow intenso; palavras Senhor, Salvador, salvo em cor dourada contrastante',
+    'Alegria':       'brush stroke horizontal colorido suave em amarelo-suave (25% opacidade) atrás do título; palavras-chave em cor principal da paleta com sombra leve',
+    'Coragem':       'sem faixas — apenas drop shadow forte e contorno (stroke) 1px branco nas palavras-chave; alto contraste entre texto branco e fundo escuro; sem elementos suaves',
+    'Perdão':        'pincelada artística suave em roxo translúcido (20% opacidade); palavras como perdão, graça, amor em glow suave lilás; fundo levemente desfocado por Gaussian blur',
+    'Gratidão':      'faixa horizontal translúcida em tom terroso (#8FBC8F, 25% opacidade); sombra discreta e suave em todo o bloco; referência bíblica em serif elegante menor',
+    'Vitória':       'glow dourado intenso em todas as palavras-chave (blur 10px, #FFD700); faixa triunfal dourada translúcida (40% opacidade); todo o texto em branco puro com presença visual máxima',
+    'Adoração':      'faixa dourada translúcida com glow suave nas bordas; palavras Deus, Senhor, adoração em tamanho 125% e peso extra-bold; atmosfera luminosa ao redor de todo o bloco de texto',
+    'Santidade':     'faixa branca translúcida imaculada (30% opacidade); palavras santo, santidade, puro em cor dourada clara; tipografia com espaçamento aumentado (letter-spacing) para leveza etérea',
+    'Perseverança':  'faixa em tom bronze translúcido (30% opacidade); palavras como perseverança, firme, resistir em peso extra-bold e maiúsculas; sombra longa dramática no texto',
+    'Arrependimento':'overlay escuro translúcido (50% opacidade) sobre a área de texto com gradiente de baixo para cima; palavras Deus, Senhor, graça em luz branca radiante cortando o escuro',
+    'Reino':         'faixa imperial em púrpura translúcido (35% opacidade) com borda dourada fina; palavras reino, Rei, Senhor em maiúsculas com serif elegante e cor dourada imperial',
+  };
+  return mapa[emocao] || mapa['Esperança'];
+}
+
+/* ============================================================
+   SISTEMA DE COMPOSIÇÃO DO TEXTO NA IMAGEM — ULTRA 2.0
+   ============================================================ */
+function getComposicaoTexto(versiculo, emocao, tipografia) {
+  // Extrai referência bíblica se estiver no final
+  const refMatch = versiculo.match(/([A-Za-zÀ-ú\s]+\d+:\d+(?:[-–]\d+)?(?:\s*[|]\s*\w+)?)\s*$/);
+  const ref = refMatch ? refMatch[0].trim() : '';
+
+  // Classifica o tamanho do versículo para determinar hierarquia tipográfica
+  const palavras = versiculo.replace(ref, '').split(/\s+/).length;
+  let tamanhoClasse = 'curto';
+  if (palavras > 20) tamanhoClasse = 'medio';
+  if (palavras > 40) tamanhoClasse = 'longo';
+
+  const configs = {
+    curto: {
+      desc: 'versículo curto (até 20 palavras)',
+      tamanhoTexto: 'corpo do texto em 52–60px, palavras-chave em 64–72px',
+      quebras: '2–3 linhas máximo, palavras-chave em linha própria para destaque máximo',
+      espacamento: 'espaçamento entre linhas generoso (1.6–1.8x), respiro visual amplo',
+    },
+    medio: {
+      desc: 'versículo médio (21–40 palavras)',
+      tamanhoTexto: 'corpo do texto em 40–48px, palavras-chave em 52–58px',
+      quebras: '4–6 linhas com quebras inteligentes nas pausas naturais do texto',
+      espacamento: 'espaçamento entre linhas padrão (1.5x), alinhamento centralizado',
+    },
+    longo: {
+      desc: 'versículo longo (40+ palavras)',
+      tamanhoTexto: 'corpo do texto em 32–38px, palavras-chave em 42–48px',
+      quebras: '6–9 linhas, frases completas por linha sempre que possível',
+      espacamento: 'espaçamento compacto mas legível (1.4x), nunca comprimir a ponto de prejudicar leitura',
+    },
+  };
+
+  return {
+    ...configs[tamanhoClasse],
+    referencia: ref,
+    tamanhoRef: '26–32px, peso leve ou médio, posição elegante no rodapé da área de texto',
+    versiculoSemRef: versiculo.replace(ref, '').trim(),
+  };
+}
+
+/* ============================================================
+   SUFIXOS POR IA
+   ============================================================ */
+function getSufixoIA(ai) {
+  const map = {
+    'Midjourney':        '\n\n--ar 9:16 --q 2 --style raw --v 6.1',
+    'DALL·E 3':          '\n\nFormato: vertical 9:16, 1080x1920px. Qualidade: hd. Estilo: vivid.',
+    'Stable Diffusion':  '\n\nNegative prompt: text, watermark, logo, low quality, blurry, distorted, modern clothing, cartoon, anime.\nSteps: 40 | CFG: 7.5 | Sampler: DPM++ 2M Karras | Size: 1080x1920',
+    'Adobe Firefly':     '\n\nProporção: 9:16. Intensidade de conteúdo: alta. Referência de estilo: foto.',
+    'Ideogram':          '\n\nAspect ratio: 9:16. Style: Realistic. Color palette: warm gold tones.',
+    'Leonardo AI':       '\n\nAspect ratio: 9:16. Preset: PhotoReal v2. Guidance: 7. Steps: 40.',
+    'Flux':              '\n\nAspect ratio: 9:16. Steps: 30. Guidance: 3.5. Sampler: euler.',
+    'ChatGPT':           '\n\nGere esta imagem no formato vertical 9:16 (1080x1920px) com altíssima qualidade fotorrealista.',
+    'Gemini':            '\n\nFormato: retrato vertical 9:16 (1080x1920px). Descreva a cena de forma natural e narrativa, com riqueza fotográfica. Priorize realismo fotográfico, iluminação natural coerente e composição equilibrada para Stories.',
+    'Google Flow':       '\n\nFormato: imagem estática vertical 9:16 (1080x1920px). Gerar APENAS UMA imagem fotográfica única, sem movimento, sem vídeo e sem sequência de quadros. Descreva a cena com linguagem visual fotográfica e cinematográfica, com foco em composição, iluminação e atmosfera.',
+  };
+  return map[ai] || '';
+}
+
+/* ============================================================
+   GERAR PROMPT
+   ============================================================ */
+function gerarPrompt() {
+  const versiculo = document.getElementById('versiculo').value.trim();
+  if (!versiculo) {
+    showToast('⚠️ Cole um versículo antes de gerar o prompt.');
+    document.getElementById('versiculo').focus();
+    return;
+  }
+
+  const btn = document.getElementById('btnGerar');
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const descricao = document.getElementById('descricao').value.trim();
+    const analise   = analisarVersiculo(versiculo);
+    const estilo    = selectedStyle || 'Automático — definido pela emoção do versículo';
+    const temRefs   = refImages.length > 0;
+    const tipografia = getTipografia(analise.emocao);
+    const destaque    = getDestaqueVisual(analise.emocao);
+    const composicao  = getComposicaoTexto(versiculo, analise.emocao, tipografia);
+    const variacao    = getVariacaoDinamica();
+
+    let refBlock = '';
+    if (temRefs) {
+      refBlock = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+REFERÊNCIAS VISUAIS (${refImages.length} imagem${refImages.length > 1 ? 's' : ''} fornecida${refImages.length > 1 ? 's' : ''})
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+As imagens de referência devem inspirar APENAS:
+• Composição e enquadramento
+• Paleta de cores e harmonia tonal
+• Estilo de iluminação
+• Atmosfera artística geral
+NÃO reproduzir nem copiar nenhum elemento específico.
+A imagem final deve ser 100% original.
+`;
+    }
+
+    const personagensStr = analise.personagens.length > 0
+      ? analise.personagens.map(p => `• ${p}`).join('\n')
+      : '• Paisagem ou cena simbólica sem figuras humanas centrais — foco na atmosfera e no ambiente';
+
+    const objetosStr = analise.objetosDetectados.length > 0
+      ? '\nOBJETOS SIMBÓLICOS IDENTIFICADOS:\n' + analise.objetosDetectados.map(o => `• ${o}`).join('\n')
+      : '';
+
+    const descricaoBlock = descricao
+      ? `\nINTENÇÃO VISUAL DO USUÁRIO:\n${descricao}\n`
+      : '';
+
+    const detalheAmbiente = analise.ambienteEhBiblico
+      ? 'com detalhes ricos e autênticos do período bíblico — arquitetura, vegetação, vestimentas e atmosfera do Oriente Médio antigo.'
+      : 'com detalhes ricos, realistas e visualmente imersivos, condizentes com o cenário escolhido pelo usuário.';
+
+    const restricaoModernidade = analise.ambienteEhBiblico
+      ? '✗ Sem elementos modernos (tecnologia, roupas contemporâneas, veículos, edifícios modernos)\n'
+      : '';
+
+    const restricaoJesus = analise.personagens.some(p => p.includes('Jesus Cristo'))
+      ? '✗ Jesus Cristo: SEMPRE representado como homem judeu do século I — vestes históricas de linho/lã, aparência digna e respeitosa, sem estereótipos, sem aparência européia moderna\n✗ NÃO representar o Pai com forma humana — apenas luz e glória\n'
+      : '✗ Qualquer figura humana representada com dignidade e respeito, sem caricaturas ou simplificações\n';
+
+    const prompt = `━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PROMPT MASTER ULTRA 2.0 — IMAGEM BÍBLICA PARA STORIES
+Otimizado para: ${selectedAI}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+TIPO DE GERAÇÃO: IMAGEM ESTÁTICA ÚNICA (não vídeo, não animação, não sequência de quadros).
+FORMATO OBRIGATÓRIO: vertical 9:16 · 1080 × 1920 px — Stories do WhatsApp, Instagram e Facebook.
+IDIOMA DO TEXTO NA IMAGEM: Português do Brasil (PT-BR) — obrigatório, sem exceções.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+VERSÍCULO — REPRODUZIR EXATAMENTE COMO ESCRITO ABAIXO
+(SEM ALTERAR, CORRIGIR, RESUMIR, TRADUZIR OU REESCREVER NENHUMA PALAVRA)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+"${versiculo}"
+
+EMOÇÃO DOMINANTE IDENTIFICADA: ${analise.emocao}
+DIREÇÃO ARTÍSTICA: ${estilo}
+${descricaoBlock}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CENA VISUAL — NÃO GERAR CENA GENÉRICA
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Crie uma cena visual ORIGINAL E ÚNICA que represente fielmente a essência espiritual e teológica do versículo acima. A composição deve transmitir a mensagem de forma emocionalmente impactante, com escala monumental e atmosfera de admiração e contemplação.
+
+AMBIENTE PRINCIPAL:
+${analise.ambiente}, ${detalheAmbiente}
+
+PERSONAGENS (quando aplicável):
+${personagensStr}
+${objetosStr}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ESPECIFICAÇÕES CINEMATOGRÁFICAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+• Enquadramento: ${variacao.enquadramento}
+• Óptica: ${variacao.distanciaFocal}
+• Profundidade de campo: bokeh suave no fundo, foco tack-sharp no elemento principal
+• Perspectiva: imersiva, convidando o espectador a entrar na cena
+• Elemento secundário: ${variacao.elementoSecundario}
+• Color grading: contraste cinematográfico com gradação de cor profissional
+• Qualidade: ultra realismo fotográfico · 8K · texturas ricas e detalhadas
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ILUMINAÇÃO
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${analise.iluminacao}. Iluminação volumétrica e tridimensional com raios de luz visíveis. Partículas de poeira suspensas nos feixes luminosos. Céu dramático com profundidade atmosférica.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PALETA DE CORES
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+${analise.paleta}. Harmonia tonal coesa. Saturação equilibrada. Gradação suave entre luz e sombra.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TEXTO SOBREPOSTO NA IMAGEM — SISTEMA COMPLETO (OBRIGATÓRIO)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+INSTRUÇÃO CRÍTICA: O texto deve estar INTEGRADO VISUALMENTE À CENA como elemento compositivo, não colado sobre a imagem. O fundo da cena deve ser concebido para RECEBER O TEXTO com contraste natural.
+
+VERSÍCULO COMPLETO A RENDERIZAR NA IMAGEM (copiar exatamente):
+"${versiculo}"
+
+▸ TIPOGRAFIA PRINCIPAL (grupo: ${tipografia.grupo}):
+  Família: ${tipografia.fontes[0]} como fonte principal, ${tipografia.fontes[1]} como complemento secundário
+  Estilo: ${tipografia.descricao}
+  Posicionamento: ${tipografia.estiloPosicao}
+
+▸ HIERARQUIA E TAMANHO (versículo ${composicao.desc}):
+  ${composicao.tamanhoTexto}
+  Quebras de linha: ${composicao.quebras}
+  Espaçamento: ${composicao.espacamento}
+
+▸ DESTAQUE SEMÂNTICO DAS PALAVRAS-CHAVE:
+  Palavras a destacar: Deus, Jesus, Senhor, Cristo, Filho, fé, amor, graça, paz, esperança, vida, salvação, reino, glória, misericórdia, poder
+  Recurso de destaque: ${destaque}
+  Aplicar: escala 115–125% maior + peso visual superior + contraste diferenciado nas palavras listadas acima
+
+▸ REFERÊNCIA BÍBLICA:
+  Posição: rodapé elegante da área de texto, centralizado
+  Tamanho: ${composicao.tamanhoRef}
+  Nunca omitir a referência — deve estar sempre visível e legível
+
+▸ LEGIBILIDADE ABSOLUTA (aplicar obrigatoriamente):
+  — Sombra de texto suave: drop-shadow 2–4px, opacidade 60–80%, cor escura
+  — Glow discreto em palavras-chave: blur 6–10px na cor da paleta
+  — Fundo translúcido sob o bloco de texto quando necessário para contraste
+  — Controle de luminosidade do fundo: a região por trás do texto deve ser 30–50% mais escura que o resto da cena, seja por overlay gradiente, vinheta suave ou tratamento de luz
+  — Nenhuma palavra pode desaparecer, ser cortada ou ficar ilegível
+
+▸ ÁREA SEGURA OBRIGATÓRIA (imagem 1080 × 1920 px):
+  Margem superior: mínimo 13% da altura (≈ 250px) — nenhum texto antes dessa margem
+  Margem inferior: mínimo 16% da altura (≈ 307px) — nenhum texto após esse limite
+  Margem esquerda: mínimo 9% (≈ 97px)
+  Margem direita: mínimo 9% (≈ 97px)
+  Nenhuma palavra pode ser cortada, truncada ou tocar as bordas
+  Todo elemento textual deve permanecer 100% dentro da área segura
+${refBlock}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+CONTROLE DE QUALIDADE — VALIDAR ANTES DE ENTREGAR
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✓ Texto completo presente e reproduzido exatamente como fornecido
+✓ Referência bíblica presente e legível
+✓ Idioma PT-BR em todo o texto da imagem
+✓ Nenhuma palavra cortada, truncada ou fora da área segura
+✓ Alta legibilidade — teste: qualquer pessoa deve ler confortavelmente em 3 segundos
+✓ Coerência bíblica e teológica com o versículo
+✓ Coerência visual — cena representa a essência do texto, não uma imagem genérica
+✓ Formato 9:16 · 1080 × 1920 px
+✓ Qualidade profissional · pronto para WhatsApp Stories, Instagram Stories e Facebook Stories
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RESTRIÇÕES OBRIGATÓRIAS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+✗ NÃO gerar vídeo, animação, GIF ou sequência de quadros — apenas 1 imagem estática
+✗ Sem texto em qualquer idioma que não seja Português do Brasil (PT-BR)
+✗ Sem cenas genéricas ou clichês visuais — a cena deve representar ESTE versículo especificamente
+✗ Sem texto cortado, truncado ou fora da área segura
+✗ Sem watermarks, logos ou marcas d'água
+✗ Sem caricaturas ou desenhos infantis
+${restricaoModernidade}${restricaoJesus}✗ Não alterar, corrigir, resumir ou traduzir nenhuma palavra do versículo${getSufixoIA(selectedAI)}`;
+
+    document.getElementById('prompt-output').textContent = prompt;
+    document.getElementById('outputMeta').textContent    = `Emoção: ${analise.emocao} · Estilo: ${estilo.split('—')[0].trim()} · Variação #${_geracaoIndex}`;
+    document.getElementById('outputCharCount').textContent = `${prompt.length.toLocaleString('pt-BR')} caracteres`;
+
+    const compatEl = document.getElementById('compatTags');
+    compatEl.innerHTML = ['Midjourney','DALL·E 3','Stable Diffusion','Firefly','Ideogram','Leonardo AI','Flux','ChatGPT','Gemini','Google Flow']
+      .map(ai => `<span class="compat-tag">${ai}</span>`).join('');
+
+    document.getElementById('outputSection').classList.add('visible');
+
+    btn.classList.remove('loading');
+    btn.disabled = false;
+
+    setTimeout(() => {
+      document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+
+    showToast('✦ Prompt gerado com sucesso!');
+  }, 900);
+}
+
+/* ============================================================
+   COPIAR
+   ============================================================ */
+function copiarPrompt() {
+  const text = document.getElementById('prompt-output').textContent;
+  if (!text) { showToast('⚠️ Gere um prompt primeiro.'); return; }
+  navigator.clipboard.writeText(text).then(() => {
+    showToast('📋 Prompt copiado para a área de transferência!');
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('📋 Copiado!');
+  });
+}
+
+/* ============================================================
+   DOWNLOAD
+   ============================================================ */
+function downloadPrompt() {
+  const text = document.getElementById('prompt-output').textContent;
+  if (!text) { showToast('⚠️ Gere um prompt primeiro.'); return; }
+  const blob = new Blob([text], { type: 'text/plain;charset=utf-8' });
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href     = url;
+  a.download = 'prompt-master-biblico.txt';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('⬇ Arquivo baixado!');
+}
+
+/* ============================================================
+   LIMPAR
+   ============================================================ */
+function limpar() {
+  document.getElementById('versiculo').value        = '';
+  document.getElementById('descricao').value         = '';
+  document.getElementById('versiculo-count').textContent = '0';
+  document.getElementById('desc-count').textContent  = '0';
+  document.querySelectorAll('.style-opt').forEach(o => {
+    o.classList.remove('active'); o.setAttribute('aria-checked','false');
+  });
+  document.querySelectorAll('.scenario-opt').forEach(o => {
+    o.classList.remove('active'); o.setAttribute('aria-checked','false');
+  });
+  document.getElementById('scenarioCustom').value = '';
+  scenarioCustomWrap.classList.remove('visible');
+  document.querySelectorAll('.ai-chip').forEach((c,i) => {
+    c.classList.toggle('active', i===0);
+    c.setAttribute('aria-checked', i===0 ? 'true':'false');
+  });
+  selectedStyle    = '';
+  selectedAI       = 'Midjourney';
+  selectedScenario = '';
+  refImages        = [];
+  renderPreviews();
+  document.getElementById('outputSection').classList.remove('visible');
+  document.getElementById('prompt-output').textContent = '';
+  document.getElementById('versiculo').focus();
+  showToast('🗑 Campos limpos.');
+}
+
+/* ============================================================
+   TOAST
+   ============================================================ */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+}
+</script>
+</body>
+</html>

@@ -430,21 +430,25 @@ footer { text-align: center; padding: 28px 0 16px; font-size: 11px; color: var(-
       <div class="semantic-title">⚡ Motor de Destaque Semântico — Palavras detectadas no versículo:</div>
       <div class="semantic-keywords" id="semanticKeywords">
         <span class="keyword-tag" data-kw="Jesus">Jesus</span>
+        <span class="keyword-tag" data-kw="Cristo">Cristo</span>
         <span class="keyword-tag" data-kw="Deus">Deus</span>
         <span class="keyword-tag" data-kw="Senhor">Senhor</span>
-        <span class="keyword-tag" data-kw="Cristo">Cristo</span>
+        <span class="keyword-tag" data-kw="Pai">Pai</span>
+        <span class="keyword-tag" data-kw="Filho">Filho</span>
+        <span class="keyword-tag" data-kw="Espírito">Espírito</span>
         <span class="keyword-tag" data-kw="Fé">Fé</span>
         <span class="keyword-tag" data-kw="Amor">Amor</span>
         <span class="keyword-tag" data-kw="Graça">Graça</span>
-        <span class="keyword-tag" data-kw="Vida">Vida</span>
-        <span class="keyword-tag" data-kw="Salvação">Salvação</span>
         <span class="keyword-tag" data-kw="Paz">Paz</span>
         <span class="keyword-tag" data-kw="Esperança">Esperança</span>
+        <span class="keyword-tag" data-kw="Vida">Vida</span>
+        <span class="keyword-tag" data-kw="Luz">Luz</span>
+        <span class="keyword-tag" data-kw="Verdade">Verdade</span>
+        <span class="keyword-tag" data-kw="Salvação">Salvação</span>
         <span class="keyword-tag" data-kw="Reino">Reino</span>
-        <span class="keyword-tag" data-kw="Misericórdia">Misericórdia</span>
         <span class="keyword-tag" data-kw="Glória">Glória</span>
+        <span class="keyword-tag" data-kw="Misericórdia">Misericórdia</span>
         <span class="keyword-tag" data-kw="Poder">Poder</span>
-        <span class="keyword-tag" data-kw="Filho">Filho</span>
       </div>
     </div>
   </div>
@@ -796,21 +800,68 @@ bindCounter('descricao',  'desc-count');
    MOTOR DE DESTAQUE SEMÂNTICO — detecção automática
    ============================================================ */
 const KEYWORDS_SEMANTICAS = [
-  'Jesus','Deus','Senhor','Cristo','Fé','Amor','Graça',
-  'Vida','Salvação','Paz','Esperança','Reino','Misericórdia','Glória','Poder','Filho'
+  'Jesus','Cristo','Deus','Senhor','Pai','Filho','Espírito',
+  'Fé','Amor','Graça','Paz','Esperança','Vida','Luz','Verdade',
+  'Salvação','Reino','Glória','Misericórdia','Poder'
 ];
+
+// Conjunto de keywords ativadas manualmente pelo usuário (toggle)
+const _kwManualOn  = new Set();
+const _kwManualOff = new Set();
 
 document.getElementById('versiculo').addEventListener('input', detectarKeywords);
 
+function _matchKeyword(texto, kw) {
+  // Normaliza a keyword e o texto removendo acentos para comparação robusta
+  const normalize = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+  const kwNorm = normalize(kw);
+  const textoNorm = normalize(texto);
+  // Usa regex com word-boundary adaptado para PT-BR (evita falsos positivos)
+  const regex = new RegExp('(?<![a-záàãâäéèêëíìîïóòõôöúùûüç])' + kwNorm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![a-záàãâäéèêëíìîïóòõôöúùûüç])', 'i');
+  return regex.test(textoNorm);
+}
+
 function detectarKeywords() {
-  const texto = document.getElementById('versiculo').value.toLowerCase();
+  const texto = document.getElementById('versiculo').value;
   document.querySelectorAll('.keyword-tag').forEach(tag => {
-    const kw = tag.dataset.kw.toLowerCase();
-    const detectado = texto.includes(kw);
+    const kw = tag.dataset.kw;
+    // Manual override tem prioridade; senão usa detecção automática
+    let detectado;
+    if (_kwManualOn.has(kw))       detectado = true;
+    else if (_kwManualOff.has(kw)) detectado = false;
+    else                            detectado = _matchKeyword(texto, kw);
     tag.classList.toggle('detected', detectado);
-    tag.title = detectado ? `"${tag.dataset.kw}" detectada no versículo — será destacada` : `"${tag.dataset.kw}" — não detectada no versículo`;
+    tag.title = detectado
+      ? `"${kw}" detectada — será destacada na imagem (clique para remover)`
+      : `"${kw}" — não detectada (clique para forçar destaque)`;
   });
 }
+
+// Clique na tag: toggle manual
+document.getElementById('semanticKeywords').addEventListener('click', e => {
+  const tag = e.target.closest('.keyword-tag');
+  if (!tag) return;
+  const kw = tag.dataset.kw;
+  if (_kwManualOn.has(kw)) {
+    // estava forçado ON → vai para OFF manual
+    _kwManualOn.delete(kw);
+    _kwManualOff.add(kw);
+  } else if (_kwManualOff.has(kw)) {
+    // estava forçado OFF → volta ao automático
+    _kwManualOff.delete(kw);
+  } else {
+    const textoAtual = document.getElementById('versiculo').value;
+    const autoDetect = _matchKeyword(textoAtual, kw);
+    if (autoDetect) {
+      // detectada automaticamente → forçar OFF
+      _kwManualOff.add(kw);
+    } else {
+      // não detectada → forçar ON
+      _kwManualOn.add(kw);
+    }
+  }
+  detectarKeywords();
+});
 
 /* ============================================================
    LEGIBILIDADE

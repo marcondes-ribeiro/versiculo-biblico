@@ -188,24 +188,6 @@ select option { background: #1A1A24; color: var(--text-primary); }
   box-shadow: 0 0 12px rgba(201,168,76,0.12);
 }
 
-/* AI selector */
-.ai-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-.ai-chip {
-  display: flex; align-items: center; gap: 6px;
-  padding: 7px 14px;
-  background: var(--bg-input); border: 1px solid var(--border);
-  border-radius: 24px; font-size: 12.5px; color: var(--text-muted);
-  cursor: pointer; user-select: none;
-  transition: all var(--ease);
-}
-.ai-chip:hover { border-color: var(--border-mid); color: var(--text-primary); }
-.ai-chip.active {
-  border-color: var(--gold);
-  background: rgba(201,168,76,0.09);
-  color: var(--gold); font-weight: 600;
-  box-shadow: 0 0 12px rgba(201,168,76,0.12);
-}
-
 .actions { margin: 28px 0 0; display: flex; gap: 10px; flex-wrap: wrap; }
 
 .btn-generate {
@@ -417,7 +399,7 @@ footer strong { color: var(--gold-dim); }
     <div class="eyebrow">✦ Motor Semântico ✦</div>
     <h1>Prompt Bíblico <em>IA</em></h1>
     <p class="subtitle">
-      Cole o versículo — o motor analisa o significado e gera o prompt completo para você levar a uma IA de imagem
+      Cole o versículo — o motor analisa o significado e gera o prompt completo para uma IA intermediária, que então criará o prompt final de imagem
     </p>
     <div class="badge-offline">⚡ 100% Offline · Sem API · Processamento Local</div>
   </header>
@@ -426,10 +408,10 @@ footer strong { color: var(--gold-dim); }
   <div class="tip-box">
     <strong>✦ Como funciona este gerador</strong>
     <div class="tip-steps">
-      <div class="tip-step"><div class="tip-num">1</div><span>Cole o versículo bíblico e escolha as opções abaixo</span></div>
-      <div class="tip-step"><div class="tip-num">2</div><span>Clique em <strong>Gerar Prompt</strong> — o motor analisa e monta o prompt automaticamente (sem internet)</span></div>
-      <div class="tip-step"><div class="tip-num">3</div><span>Copie o resultado e cole no <strong>ChatGPT, Gemini ou Claude</strong> para que a IA intermediária refine e gere o prompt final de imagem</span></div>
-      <div class="tip-step"><div class="tip-num">4</div><span>Leve o prompt final para o <strong>Midjourney, Leonardo AI, DALL·E, Ideogram</strong> ou outra ferramenta de imagem</span></div>
+      <div class="tip-step"><div class="tip-num">1</div><span>Cole o versículo bíblico completo, com a referência</span></div>
+      <div class="tip-step"><div class="tip-num">2</div><span>Escolha o estilo visual e, se quiser, descreva sua <strong>intenção visual</strong> e as <strong>palavras para destacar</strong></span></div>
+      <div class="tip-step"><div class="tip-num">3</div><span>Clique em <strong>Gerar Prompt</strong> — o motor analisa o sentido do versículo e monta o prompt automaticamente (sem internet)</span></div>
+      <div class="tip-step"><div class="tip-num">4</div><span>Copie o resultado e cole numa <strong>IA intermediária</strong> (ChatGPT, Gemini ou Claude) — ela vai gerar o prompt final, pronto para qualquer IA de imagem</span></div>
     </div>
   </div>
 
@@ -474,26 +456,44 @@ Exemplo: "Certamente a bondade e a fidelidade me seguirão todos os dias da minh
     </div>
   </div>
 
-  <!-- CAMPO 3 — IA DE DESTINO FINAL -->
+  <!-- CAMPO 3 — INTENÇÃO VISUAL (OPCIONAL) -->
   <div class="card">
     <div class="card-head">
-      <div class="card-icon">🎯</div>
+      <div class="card-icon">💭</div>
       <div>
-        <div class="card-title">IA de Imagem Final</div>
-        <div class="card-sub">O prompt será formatado para esta ferramenta geradora de imagens</div>
+        <div class="card-title">Intenção Visual <span style="color:var(--text-dim); font-weight:400;">(opcional)</span></div>
+        <div class="card-sub">Descreva elementos, atmosfera ou cena desejada — a IA intermediária usará isso como direção extra</div>
       </div>
       <div class="field-num">3</div>
     </div>
-    <div class="ai-grid" id="aiGrid">
-      <div class="ai-chip active" data-ai="Midjourney">🎯 Midjourney</div>
-      <div class="ai-chip" data-ai="Leonardo AI">🦁 Leonardo AI</div>
-      <div class="ai-chip" data-ai="DALL·E 3">⚡ DALL·E 3</div>
-      <div class="ai-chip" data-ai="Ideogram">💡 Ideogram</div>
-      <div class="ai-chip" data-ai="Flux">⚙️ Flux</div>
-      <div class="ai-chip" data-ai="Google Flow">🎞️ Google Flow</div>
-      <div class="ai-chip" data-ai="Gemini Imagen">🔷 Gemini Imagen</div>
-      <div class="ai-chip" data-ai="Adobe Firefly">🔥 Adobe Firefly</div>
+    <textarea
+      id="intencaoVisual"
+      rows="4"
+      maxlength="1200"
+      placeholder="Intenção visual: Descrever elementos, atmosfera ou cena desejada, mas opcional...
+
+Exemplo: prefiro um céu tempestuoso ao fundo, com a cidade visível ao longe, e a luz vindo de uma fresta nas nuvens."
+    ></textarea>
+    <div class="char-counter"><span id="intencao-count">0</span> / 1200</div>
+  </div>
+
+  <!-- CAMPO 4 — PALAVRAS DE DESTAQUE -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">🔆</div>
+      <div>
+        <div class="card-title">Palavras para Destacar <span style="color:var(--text-dim); font-weight:400;">(opcional)</span></div>
+        <div class="card-sub">Palavras do versículo que devem ganhar maior peso visual no texto da imagem — separe por ponto e vírgula (;)</div>
+      </div>
+      <div class="field-num">4</div>
     </div>
+    <textarea
+      id="palavrasDestaque"
+      rows="2"
+      maxlength="300"
+      placeholder="Ex: Jesus; fé; salvação; glória"
+    ></textarea>
+    <div class="char-counter"><span id="destaque-count">0</span> / 300</div>
   </div>
 
   <!-- AÇÕES -->
@@ -565,19 +565,11 @@ Exemplo: "Certamente a bondade e a fidelidade me seguirão todos os dias da minh
 /* ============================================================
    STATE
    ============================================================ */
-let selectedAI    = 'Midjourney';
 let selectedStyle = 'cinematic-realism';
 
 /* ============================================================
    SELECTORS
    ============================================================ */
-document.querySelectorAll('.ai-chip').forEach(chip => {
-  chip.addEventListener('click', () => {
-    document.querySelectorAll('.ai-chip').forEach(c => c.classList.remove('active'));
-    chip.classList.add('active');
-    selectedAI = chip.dataset.ai;
-  });
-});
 document.querySelectorAll('.style-chip').forEach(chip => {
   chip.addEventListener('click', () => {
     document.querySelectorAll('.style-chip').forEach(c => c.classList.remove('active'));
@@ -592,6 +584,14 @@ document.querySelectorAll('.style-chip').forEach(chip => {
 const versiculoEl = document.getElementById('versiculo');
 const verCountEl  = document.getElementById('ver-count');
 versiculoEl.addEventListener('input', () => { verCountEl.textContent = versiculoEl.value.length; });
+
+const intencaoEl = document.getElementById('intencaoVisual');
+const intencaoCountEl = document.getElementById('intencao-count');
+intencaoEl.addEventListener('input', () => { intencaoCountEl.textContent = intencaoEl.value.length; });
+
+const destaqueEl = document.getElementById('palavrasDestaque');
+const destaqueCountEl = document.getElementById('destaque-count');
+destaqueEl.addEventListener('input', () => { destaqueCountEl.textContent = destaqueEl.value.length; });
 
 /* ============================================================
    THINKING ANIMATION
@@ -620,6 +620,29 @@ function stopThinking() {
 }
 
 /* ============================================================
+   DETECTOR DE ELEMENTOS DE CENA
+   (pessoas, objetos, ambientes — guia o cenário pelo CONTEÚDO do versículo)
+   ============================================================ */
+const ELEMENTOS_CENA = {
+  pessoas: ['jesus','cristo','deus','pai','senhor','espírito santo','discípulo','discípulos','apóstolo','apóstolos','profeta','profetas','pastor','pastores','rei','reis','fiel','fiéis','anjo','anjos','povo','multidão'],
+  objetos: ['cruz','porta','coroa','bíblia','escritura','pão','cálice','copo','barco','rede','cajado','vara','espada','lâmpada','vela','semente','vinha','oliveira'],
+  ambientes: ['céu','céus','nuvem','nuvens','deserto','monte','montanha','mar','templo','campo','cidade','jerusalém','casa','jardim','rio','vale','estrela','estrelas','sol','lua','terra'],
+};
+
+function detectarElementosCena(texto) {
+  const lower = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const encontrados = { pessoas: [], objetos: [], ambientes: [] };
+  for (const [categoria, lista] of Object.entries(ELEMENTOS_CENA)) {
+    lista.forEach(item => {
+      const itemNorm = item.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const re = new RegExp('\\b' + itemNorm.replace(/\s+/g,'\\s+') + '\\b', 'i');
+      if (re.test(lower)) encontrados[categoria].push(item);
+    });
+  }
+  return encontrados;
+}
+
+/* ============================================================
    ANÁLISE SEMÂNTICA LOCAL
    ============================================================ */
 
@@ -640,7 +663,16 @@ const SEMANTIC_MAP = {
   provisao:   { kws: ['provê','prover','provisão','necessidade','suprirá','pão','alimento','sustento','pastor'], tema: 'Provisão e Cuidado do Senhor', emocao: 'Gratidão e Confiança Filial', simbolo: 'pastor e ovelhas, mesa farta, mãos abertas recebendo' },
 };
 
-function analisarVersiculo(texto) {
+// Palavras-âncora de maior valor semântico/teológico — recebem peso "alto" na hierarquia tipográfica
+const PALAVRAS_ANCORA = ['jesus','cristo','deus','senhor','pai','espírito santo','fé','amor','graça','vida','salvação','paz','esperança','reino','misericórdia','glória','poder','eterno','eternidade','ressurreição','perdão','santidade','vitória','verdade','luz'];
+
+function classificarPeso(palavra) {
+  const p = palavra.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const ancoras = PALAVRAS_ANCORA.map(a => a.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+  return ancoras.includes(p) ? 'alto' : 'médio';
+}
+
+function analisarVersiculo(texto, palavrasManuais) {
   const lower = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
   let tema = 'Revelação e Mensagem Divina';
   let emocao = 'Reverência e Contemplação';
@@ -659,21 +691,40 @@ function analisarVersiculo(texto) {
     }
   }
 
-  // Extrair palavras de destaque (maiúsculas semânticas)
-  const stopWords = new Set(['de','da','do','em','e','a','o','as','os','que','um','uma','para','com','se','não','nos','na','ao','pelo','pela','mais','mas','ou','como','sua','seu','das','dos','ao','te','me','lhe','já','bem','por','este','esta','isso','isto','aqui','ali','lá','só','até']);
+  // Extrair palavras de destaque automáticas (maiúsculas semânticas)
+  const stopWords = new Set(['de','da','do','em','e','a','o','as','os','que','um','uma','para','com','se','não','nos','na','ao','pelo','pela','mais','mas','ou','como','sua','seu','das','dos','ao','te','me','lhe','já','bem','por','este','esta','isso','isto','aqui','ali','lá','só','até','você','vocês','quando','onde','qual','quais','cada','todo','toda','todos','todas','ele','ela','eles','elas','nós','vós','meu','minha','meus','minhas','teu','tua','teus','tuas','nosso','nossa','sob','sobre','entre','desde','depois','antes','então','assim','pois','porque','porém','contudo','enquanto']);
   const palavras = texto.replace(/["""''.,;:!?—–\-\(\)]/g, ' ').split(/\s+/)
     .map(w => w.trim().replace(/[^\w\sáéíóúãõâêîôûàèìòùäëïöüç]/gi, ''))
     .filter(w => w.length > 3 && !stopWords.has(w.toLowerCase()));
 
-  // Frequência
+  // Frequência — palavras-âncora teológicas ganham peso extra na ordenação
   const freq = {};
   palavras.forEach(w => { const k = w.toLowerCase(); freq[k] = (freq[k] || 0) + 1; });
-  const destaques = Object.entries(freq)
-    .sort((a,b) => b[1]-a[1])
-    .slice(0, 5)
+  const ancorasNorm = PALAVRAS_ANCORA.map(a => a.normalize('NFD').replace(/[\u0300-\u036f]/g, ''));
+  let destaquesAuto = Object.entries(freq)
+    .sort((a,b) => {
+      const aAncora = ancorasNorm.includes(a[0].normalize('NFD').replace(/[\u0300-\u036f]/g, '')) ? 1 : 0;
+      const bAncora = ancorasNorm.includes(b[0].normalize('NFD').replace(/[\u0300-\u036f]/g, '')) ? 1 : 0;
+      if (aAncora !== bAncora) return bAncora - aAncora;
+      return b[1] - a[1];
+    })
+    .slice(0, 6)
     .map(([w]) => w);
 
-  return { tema, emocao, simbolo, destaques, kwsEncontradas };
+  // Palavras manuais (informadas pelo usuário) têm prioridade absoluta sobre as automáticas
+  let destaquesFinais = [];
+  if (palavrasManuais && palavrasManuais.length) {
+    destaquesFinais = palavrasManuais;
+  } else {
+    destaquesFinais = destaquesAuto;
+  }
+
+  // Classificar cada destaque por peso semântico (alto/médio) para a hierarquia tipográfica
+  const destaquesComPeso = destaquesFinais.map(w => ({ palavra: w, peso: classificarPeso(w) }));
+
+  const elementosCena = detectarElementosCena(texto);
+
+  return { tema, emocao, simbolo, destaques: destaquesFinais, destaquesComPeso, kwsEncontradas, elementosCena };
 }
 
 /* ============================================================
@@ -748,18 +799,47 @@ function extrairReferencia(texto) {
 /* ============================================================
    CONSTRUTOR DO PROMPT PARA IA INTERMEDIÁRIA
    ============================================================ */
-function buildPromptParaIA(versiculo, analise, estilo, aiDestino) {
+function buildPromptParaIA(versiculo, analise, estilo, intencaoVisual, palavrasManuaisTexto) {
   const estiloData = ESTILOS[estilo] || ESTILOS['cinematic-realism'];
   const referencia = extrairReferencia(versiculo);
   const textoSemRef = referencia ? versiculo.replace(referencia, '').trim().replace(/[—–-]+$/, '').trim() : versiculo;
-  const destaques = analise.destaques.join(', ');
+
+  // Lista de destaques com peso semântico, formatada para leitura humana
+  const destaquesFormatados = analise.destaquesComPeso
+    .map(d => `${d.palavra} (peso ${d.peso})`)
+    .join(', ');
+
+  // Elementos de cena detectados no próprio versículo — usados para ancorar o cenário no CONTEÚDO real do texto
+  const ec = analise.elementosCena;
+  const elementosDetectadosLista = [
+    ec.pessoas.length  ? `Pessoas/figuras mencionadas: ${ec.pessoas.join(', ')}`   : null,
+    ec.objetos.length  ? `Objetos/símbolos mencionados: ${ec.objetos.join(', ')}`  : null,
+    ec.ambientes.length? `Ambientes/cenários mencionados: ${ec.ambientes.join(', ')}` : null,
+  ].filter(Boolean);
+  const elementosDetectadosTexto = elementosDetectadosLista.length
+    ? elementosDetectadosLista.join('\n')
+    : 'Nenhum elemento explícito detectado automaticamente — interprete pelo sentido geral do versículo.';
+
+  const blocoIntencao = (intencaoVisual && intencaoVisual.trim())
+    ? `\n▸ INTENÇÃO VISUAL INFORMADA PELO USUÁRIO (use como direção prioritária para compor a cena):\n"${intencaoVisual.trim()}"\n`
+    : `\n▸ INTENÇÃO VISUAL INFORMADA PELO USUÁRIO: nenhuma — defina a cena com base exclusivamente no sentido teológico e nos elementos detectados no versículo.\n`;
+
+  const blocoPalavrasManuais = (palavrasManuaisTexto && palavrasManuaisTexto.trim())
+    ? `\n▸ PALAVRAS QUE O USUÁRIO PEDIU EXPLICITAMENTE PARA DESTACAR (prioridade máxima no peso visual): ${palavrasManuaisTexto.trim()}\n`
+    : `\n▸ PALAVRAS QUE O USUÁRIO PEDIU EXPLICITAMENTE PARA DESTACAR: nenhuma — use a lista de destaques automáticos por peso semântico abaixo.\n`;
 
   return `═══════════════════════════════════════════════════
 MISSÃO PARA A IA: GERAR PROMPT VISUAL BÍBLICO
 ═══════════════════════════════════════════════════
 
-Você é um especialista em criação de prompts visuais cinematográficos para IA geradora de imagens.
-Sua tarefa é criar um prompt profissional e completo para gerar uma imagem bíblica deslumbrante.
+Você é um Diretor Criativo Cristão, especialista em interpretação bíblica
+visual, design editorial premium, fotografia cinematográfica e engenharia
+de prompts para IA de imagem. Sua tarefa é ler a análise abaixo — já feita
+sobre o versículo — e a partir dela CRIAR o prompt final, completo e pronto
+para uso, que será entregue a uma IA geradora de imagens (Midjourney,
+DALL·E, Leonardo AI, Ideogram, Flux, Gemini Imagen, Adobe Firefly ou
+similar). Você decide o melhor enquadramento e composição; não copie a
+análise literalmente — interprete-a e transforme-a em um prompt visual.
 
 ═══════════════════════════════════════════════════
 DADOS DO VERSÍCULO
@@ -769,8 +849,7 @@ DADOS DO VERSÍCULO
 "${textoSemRef}"
 
 📍 REFERÊNCIA BÍBLICA: ${referencia || '[extrair do versículo]'}
-🎯 IA DE DESTINO FINAL: ${aiDestino}
-🎨 ESTILO VISUAL: ${estiloData.nome}
+🎨 ESTILO VISUAL ESCOLHIDO: ${estiloData.nome}
 
 ═══════════════════════════════════════════════════
 ANÁLISE SEMÂNTICA (já processada — use como base)
@@ -778,8 +857,22 @@ ANÁLISE SEMÂNTICA (já processada — use como base)
 
 ▸ TEMA CENTRAL: ${analise.tema}
 ▸ EMOÇÃO PREDOMINANTE: ${analise.emocao}
-▸ SÍMBOLOS ESPIRITUAIS: ${analise.simbolo}
-▸ PALAVRAS DE DESTAQUE SEMÂNTICO: ${destaques}
+▸ SÍMBOLOS ESPIRITUAIS SUGERIDOS: ${analise.simbolo}
+▸ PALAVRAS DE DESTAQUE SEMÂNTICO (com peso para hierarquia tipográfica): ${destaquesFormatados}
+${blocoPalavrasManuais}${blocoIntencao}
+═══════════════════════════════════════════════════
+ELEMENTOS DE CENA DETECTADOS NO PRÓPRIO VERSÍCULO
+═══════════════════════════════════════════════════
+
+IMPORTANTE: o cenário da imagem NÃO deve seguir um padrão fixo de "época
+bíblica" por padrão. O cenário deve ser definido pelo que o texto realmente
+diz. Se o versículo fala de céu, o céu deve estar presente na cena; se fala
+de Jesus, Jesus deve aparecer; se fala de um ambiente específico (deserto,
+templo, mar, casa, jardim), use esse ambiente como base real da composição.
+Só recorra a uma ambientação histórica genérica do século I se o versículo
+não indicar nenhum elemento concreto de cena.
+
+${elementosDetectadosTexto}
 
 ═══════════════════════════════════════════════════
 ESPECIFICAÇÕES VISUAIS — SIGA EXATAMENTE
@@ -789,35 +882,50 @@ ESPECIFICAÇÕES VISUAIS — SIGA EXATAMENTE
 🖼️ ESTILO DE RENDERIZAÇÃO: ${estiloData.renderizacao}
 💡 ILUMINAÇÃO: ${estiloData.luz}
 🎨 PALETA DE CORES: ${estiloData.paleta}
-🏛️ REFERÊNCIA DE CENA: ${estiloData.exemplos_cena}
+🏛️ REFERÊNCIA DE CENA (ajuste conforme os elementos detectados acima): ${estiloData.exemplos_cena}
+
+Se Jesus Cristo estiver presente na cena, represente-o como homem judeu do
+século I, vestes históricas, tons naturais, aparência respeitosa — sem
+caricaturas e sem aparência moderna. Varie a pose (de costas, de perfil,
+caminhando, orando, ensinando, junto aos discípulos, batendo à porta etc.)
+de acordo com o que o versículo descreve.
 
 ═══════════════════════════════════════════════════
 DIREÇÃO TIPOGRÁFICA — TEXTO NA IMAGEM (PT-BR)
 ═══════════════════════════════════════════════════
 
-O texto do versículo DEVE aparecer na imagem em Português do Brasil.
-Estrutura visual do texto (inspirada nas referências):
+O texto do versículo DEVE aparecer na imagem em Português do Brasil, completo,
+sem cortes e sem resumos.
 
-▸ TEXTO PRINCIPAL: "${textoSemRef}"
-  — Posicionamento: 55% a 90% da altura vertical (parte inferior da imagem)
-  — Fonte sugerida: Cinzel / Playfair Display / EB Garamond (serif elegante)
-  — Cor base: #FFFFFF (branco puro) com sombra escura para legibilidade
-  — Tamanho: corpo em ~48-56px para largura de 1080px
+Organize o texto por HIERARQUIA VISUAL conforme o peso semântico de cada
+palavra — não trate todas as palavras do mesmo jeito:
 
-▸ PALAVRAS A DESTACAR EM DOURADO/NEGRITO: ${destaques}
-  — Cor de destaque: #C9A84C (dourado) ou #FFE680 (dourado brilhante)
-  — Peso: ExtraBold ou Black
-  — Podem ser ~20-30% maiores que o corpo do texto
+▸ TEXTO-BASE (palavras de peso comum/conectivos): cor branca (#FFFFFF) ou
+  bege claro (#EDE8D8), peso regular/medium, tamanho base ~48-56px para
+  largura de 1080px, com sombra escura sutil para legibilidade.
+
+▸ PALAVRAS DE PESO MÉDIO (substantivos e verbos relevantes ao sentido,
+  mas não centrais): leve aumento de peso (semibold), levemente maiores
+  que o texto-base, ainda em tom claro ou dourado suave.
+
+▸ PALAVRAS DE PESO ALTO / ÂNCORAS TEOLÓGICAS (ex: Jesus, Deus, fé, amor,
+  salvação, vida, graça, glória — e qualquer palavra que o usuário tenha
+  pedido para destacar explicitamente): cor dourada (#C9A84C ou #FFE680),
+  peso ExtraBold/Black, podem ficar 20-40% maiores que o texto-base,
+  funcionando como pontos focais da composição — exatamente como nas
+  referências visuais (palavras-chave centralizadas, isoladas em linha
+  própria quando fizer sentido, com maior destaque óptico).
 
 ▸ REFERÊNCIA BÍBLICA: "${referencia || '[Livro Cap:Versículo]'}"
   — Posição: abaixo do versículo, centralizado
   — Cor: #C9A84C (dourado suave)
   — Tamanho menor: ~36-40px
-  — Estilo: Cinzel ou similar, com separadores decorativos (✦ ou linhas)
+  — Estilo: serif elegante (Cinzel ou similar), podendo usar separadores
+    decorativos (✦ ou linhas finas)
 
-▸ OVERLAY PARA LEGIBILIDADE: gradiente escuro semitransparente
-  cobrindo a parte inferior da imagem (60% a 100% da altura)
-  para garantir que o texto seja lido com clareza absoluta
+▸ OVERLAY PARA LEGIBILIDADE: gradiente escuro semitransparente cobrindo a
+  parte da imagem onde o texto for posicionado, garantindo leitura clara
+  mesmo sobre fundos complexos.
 
 ═══════════════════════════════════════════════════
 RESTRIÇÕES ABSOLUTAS — NÃO VIOLAR
@@ -826,6 +934,7 @@ RESTRIÇÕES ABSOLUTAS — NÃO VIOLAR
 ✗ APENAS 1 imagem estática — sem vídeo, sem animação
 ✗ TODO texto na imagem OBRIGATORIAMENTE em Português do Brasil (PT-BR)
 ✗ Cena ESPECÍFICA para ESTE versículo — nunca genérica
+✗ Cenário definido pelo CONTEÚDO do versículo, não por um padrão fixo de "época bíblica"
 ✗ Texto COMPLETO e ÍNTEGRO na imagem — sem cortar ou resumir
 ✗ Sem watermarks, logos ou marcas d'água
 ✗ Sem caricatura ou estilo infantil/cartoon
@@ -837,12 +946,18 @@ O QUE VOCÊ DEVE ENTREGAR
 ═══════════════════════════════════════════════════
 
 1. DESCRIÇÃO DA CENA (150-250 palavras): descreva cinematograficamente
-   a cena principal, ambiente, personagens, perspectiva, atmosfera e detalhes,
-   ESPECIFICAMENTE relacionada ao significado deste versículo.
+   a cena principal, ambiente, personagens, perspectiva, atmosfera e
+   detalhes — ESPECIFICAMENTE relacionada ao significado e aos elementos
+   reais deste versículo (e à intenção visual informada, se houver).
 
-2. PROMPT FINAL PARA ${aiDestino.toUpperCase()}: o prompt completo,
-   formatado corretamente para ${aiDestino}, pronto para copiar e colar
-   diretamente na ferramenta.${aiDestino === 'Midjourney' ? '\n   Inclua os parâmetros: ' + estiloData.parametros_mj : ''}
+2. PROMPT FINAL PARA IMAGEM: o prompt completo e pronto para copiar e
+   colar em qualquer ferramenta de geração de imagem (Midjourney, DALL·E,
+   Leonardo AI, Ideogram, Flux, Gemini Imagen, Adobe Firefly etc.),
+   incluindo a descrição da cena, estilo, iluminação, paleta, formato
+   9:16 1080×1920, e a direção tipográfica do texto com a hierarquia de
+   destaque indicada acima. Inclua também, ao final, uma versão com os
+   parâmetros típicos do Midjourney (--ar 9:16 --v 6.1 --style raw --q 2)
+   como alternativa, caso o usuário use essa ferramenta: ${estiloData.parametros_mj}
 
 O prompt deve produzir uma imagem no padrão das melhores imagens bíblicas
 cinematográficas — como as geradas pelo ChatGPT e Gemini para conteúdo
@@ -874,8 +989,14 @@ function gerarPrompt() {
   // Processamento local (simula tempo de análise para UX)
   setTimeout(() => {
     try {
-      const analise = analisarVersiculo(versiculo);
-      const promptText = buildPromptParaIA(versiculo, analise, selectedStyle, selectedAI);
+      const intencaoVisual = intencaoEl.value.trim();
+      const palavrasManuaisTexto = destaqueEl.value.trim();
+      const palavrasManuais = palavrasManuaisTexto
+        ? palavrasManuaisTexto.split(';').map(w => w.trim()).filter(Boolean)
+        : [];
+
+      const analise = analisarVersiculo(versiculo, palavrasManuais);
+      const promptText = buildPromptParaIA(versiculo, analise, selectedStyle, intencaoVisual, palavrasManuaisTexto);
       stopThinking();
       renderOutput(promptText, versiculo, analise);
     } catch(err) {
@@ -893,7 +1014,7 @@ function gerarPrompt() {
 function renderOutput(promptText, versiculo, analise) {
   document.getElementById('prompt-output').textContent = promptText;
   document.getElementById('charCount').textContent = `${promptText.length.toLocaleString('pt-BR')} caracteres`;
-  document.getElementById('outputMeta').textContent = `${analise.tema} · ${analise.emocao} · ${selectedAI}`;
+  document.getElementById('outputMeta').textContent = `${analise.tema} · ${analise.emocao}`;
 
   const compatEl = document.getElementById('compatTags');
   compatEl.innerHTML = ['ChatGPT','Gemini','Claude','Copilot'].map(ia =>
@@ -943,14 +1064,16 @@ function baixar() {
 function limpar() {
   versiculoEl.value = '';
   verCountEl.textContent = '0';
+  intencaoEl.value = '';
+  intencaoCountEl.textContent = '0';
+  destaqueEl.value = '';
+  destaqueCountEl.textContent = '0';
   document.getElementById('prompt-output').textContent = '';
   document.getElementById('outputSection').classList.remove('visible');
   document.getElementById('qualityBar').classList.remove('visible');
   document.getElementById('errorBox').classList.remove('visible');
   document.getElementById('thinkingBar').classList.remove('visible');
-  document.querySelectorAll('.ai-chip').forEach((c,i) => c.classList.toggle('active', i===0));
   document.querySelectorAll('.style-chip').forEach((c,i) => c.classList.toggle('active', i===0));
-  selectedAI    = 'Midjourney';
   selectedStyle = 'cinematic-realism';
   versiculoEl.focus();
   showToast('🗑 Campos limpos.');

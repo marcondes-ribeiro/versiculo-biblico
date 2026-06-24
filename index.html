@@ -1,435 +1,414 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Prompt Bíblico IA — Motor Semântico (OpenRouter)</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
-  <style>
-    /* ============================================================
-       DESIGN TOKENS (mantido exatamente igual ao original)
-       ============================================================ */
-    :root {
-      --gold:         #C9A84C;
-      --gold-light:   #E8C96B;
-      --gold-dim:     #7A5F28;
-      --gold-glow:    rgba(201,168,76,0.18);
-      --bg-base:      #0A0A0D;
-      --bg-card:      #13131A;
-      --bg-input:     #1A1A24;
-      --bg-hover:     #20202C;
-      --border:       rgba(201,168,76,0.14);
-      --border-mid:   rgba(201,168,76,0.32);
-      --border-glow:  rgba(201,168,76,0.55);
-      --text-primary: #EDE8D8;
-      --text-muted:   #8A8272;
-      --text-dim:     #524E44;
-      --radius-sm:    6px;
-      --radius-md:    12px;
-      --radius-lg:    18px;
-      --radius-xl:    24px;
-      --shadow-deep:  0 4px 32px rgba(0,0,0,0.7);
-      --shadow-glow:  0 0 40px rgba(201,168,76,0.1);
-      --font-display: 'Cinzel', Georgia, serif;
-      --font-body:    'Inter', system-ui, sans-serif;
-      --ease:         0.2s ease;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Prompt Bíblico IA — Motor Semântico Automático</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:         #C9A84C;
+  --gold-light:   #E8C96B;
+  --gold-dim:     #7A5F28;
+  --gold-glow:    rgba(201,168,76,0.18);
+  --bg-base:      #0A0A0D;
+  --bg-card:      #13131A;
+  --bg-input:     #1A1A24;
+  --bg-hover:     #20202C;
+  --border:       rgba(201,168,76,0.14);
+  --border-mid:   rgba(201,168,76,0.32);
+  --border-glow:  rgba(201,168,76,0.55);
+  --text-primary: #EDE8D8;
+  --text-muted:   #8A8272;
+  --text-dim:     #524E44;
+  --radius-sm:    6px;
+  --radius-md:    12px;
+  --radius-lg:    18px;
+  --radius-xl:    24px;
+  --shadow-deep:  0 4px 32px rgba(0,0,0,0.7);
+  --shadow-glow:  0 0 40px rgba(201,168,76,0.1);
+  --font-display: 'Cinzel', Georgia, serif;
+  --font-body:    'Inter', system-ui, sans-serif;
+  --ease:         0.2s ease;
+}
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
 
-    body {
-      font-family: var(--font-body);
-      background: var(--bg-base);
-      color: var(--text-primary);
-      min-height: 100vh;
-      line-height: 1.65;
-      background-image:
-        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.04) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 30% at 80% 100%, rgba(201,168,76,0.03) 0%, transparent 60%);
-    }
+body {
+  font-family: var(--font-body);
+  background: var(--bg-base);
+  color: var(--text-primary);
+  min-height: 100vh;
+  line-height: 1.65;
+  background-image:
+    radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.04) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 80% 100%, rgba(201,168,76,0.03) 0%, transparent 60%);
+}
 
-    .wrap { max-width: 820px; margin: 0 auto; padding: 0 24px 100px; }
+.wrap { max-width: 820px; margin: 0 auto; padding: 0 24px 100px; }
 
-    header {
-      padding: 52px 0 44px;
-      text-align: center;
-      position: relative;
-    }
-    .eyebrow {
-      display: inline-flex; align-items: center; gap: 10px;
-      font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
-      text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
-    }
-    .eyebrow::before, .eyebrow::after {
-      content: ''; display: block; height: 1px; width: 36px;
-      background: linear-gradient(to right, transparent, var(--gold-dim));
-    }
-    .eyebrow::after { background: linear-gradient(to left, transparent, var(--gold-dim)); }
+header {
+  padding: 52px 0 44px;
+  text-align: center;
+  position: relative;
+}
+.eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-size: 10px; font-weight: 700; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gold); margin-bottom: 18px;
+}
+.eyebrow::before, .eyebrow::after {
+  content: ''; display: block; height: 1px; width: 36px;
+  background: linear-gradient(to right, transparent, var(--gold-dim));
+}
+.eyebrow::after { background: linear-gradient(to left, transparent, var(--gold-dim)); }
 
-    h1 {
-      font-family: var(--font-display);
-      font-size: clamp(24px, 4.5vw, 38px);
-      font-weight: 700;
-      letter-spacing: 0.04em;
-      color: var(--text-primary);
-      margin-bottom: 12px;
-      line-height: 1.15;
-    }
-    h1 em { font-style: normal; color: var(--gold); }
+h1 {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 4.5vw, 38px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text-primary);
+  margin-bottom: 12px;
+  line-height: 1.15;
+}
+h1 em { font-style: normal; color: var(--gold); }
 
-    .subtitle {
-      font-size: 13.5px; color: var(--text-muted);
-      max-width: 480px; margin: 0 auto; line-height: 1.7;
-    }
+.subtitle {
+  font-size: 13.5px; color: var(--text-muted);
+  max-width: 480px; margin: 0 auto; line-height: 1.7;
+}
 
-    .status-dot {
-      display: inline-block; width: 7px; height: 7px;
-      border-radius: 50%; background: #4CAF50;
-      margin-right: 6px; box-shadow: 0 0 8px #4CAF5088;
-      vertical-align: middle;
-      animation: pulse-dot 2s infinite;
-    }
-    @keyframes pulse-dot {
-      0%,100% { opacity:1; box-shadow: 0 0 8px #4CAF5088; }
-      50%      { opacity:.7; box-shadow: 0 0 16px #4CAF50bb; }
-    }
+.badge-offline {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(201,168,76,0.1); border: 1px solid var(--border-mid);
+  border-radius: 20px; padding: 4px 12px; margin-top: 14px;
+  font-size: 11px; font-weight: 600; color: var(--gold); letter-spacing: 0.05em;
+}
 
-    .divider {
-      display: flex; align-items: center; gap: 14px;
-      margin: 36px 0 24px;
-    }
-    .divider-line { flex:1; height:1px; background: var(--border); }
-    .divider-label {
-      font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
-      text-transform: uppercase; color: var(--text-dim);
-      white-space: nowrap;
-    }
+.divider {
+  display: flex; align-items: center; gap: 14px;
+  margin: 36px 0 24px;
+}
+.divider-line { flex:1; height:1px; background: var(--border); }
+.divider-label {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--text-dim);
+  white-space: nowrap;
+}
 
-    .card {
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xl);
-      padding: 28px 30px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow-deep);
-      transition: border-color var(--ease), box-shadow var(--ease);
-      position: relative;
-      overflow: hidden;
-    }
-    .card::before {
-      content: '';
-      position: absolute; top:0; left:0; right:0; height:1px;
-      background: linear-gradient(90deg, transparent 0%, var(--gold-dim) 40%, var(--gold-dim) 60%, transparent 100%);
-      opacity: 0.4;
-    }
-    .card:focus-within {
-      border-color: var(--border-mid);
-      box-shadow: var(--shadow-deep), var(--shadow-glow);
-    }
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 28px 30px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow-deep);
+  transition: border-color var(--ease), box-shadow var(--ease);
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg, transparent 0%, var(--gold-dim) 40%, var(--gold-dim) 60%, transparent 100%);
+  opacity: 0.4;
+}
+.card:focus-within {
+  border-color: var(--border-mid);
+  box-shadow: var(--shadow-deep), var(--shadow-glow);
+}
 
-    .card-head {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
-    }
-    .card-icon {
-      width: 36px; height: 36px; flex-shrink: 0;
-      background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.06));
-      border: 1px solid rgba(201,168,76,0.2);
-      border-radius: var(--radius-sm);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 17px;
-    }
-    .card-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
-    .card-sub   { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+.card-head {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 18px;
+}
+.card-icon {
+  width: 36px; height: 36px; flex-shrink: 0;
+  background: linear-gradient(135deg, rgba(201,168,76,0.2), rgba(201,168,76,0.06));
+  border: 1px solid rgba(201,168,76,0.2);
+  border-radius: var(--radius-sm);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px;
+}
+.card-title { font-size: 14px; font-weight: 600; color: var(--text-primary); }
+.card-sub   { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
 
-    .field-num {
-      margin-left: auto;
-      width: 24px; height: 24px; border-radius: 50%;
-      background: var(--gold-glow); border: 1px solid var(--border-mid);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 11px; font-weight: 700; color: var(--gold);
-      font-family: var(--font-display); flex-shrink:0;
-    }
+.field-num {
+  margin-left: auto;
+  width: 24px; height: 24px; border-radius: 50%;
+  background: var(--gold-glow); border: 1px solid var(--border-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--gold);
+  font-family: var(--font-display); flex-shrink:0;
+}
 
-    textarea {
-      width: 100%;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 14px 16px;
-      font-family: var(--font-body);
-      font-size: 14.5px;
-      color: var(--text-primary);
-      resize: vertical;
-      outline: none;
-      line-height: 1.7;
-      transition: border-color var(--ease), box-shadow var(--ease);
-    }
-    textarea::placeholder { color: var(--text-dim); font-style: italic; }
-    textarea:focus {
-      border-color: var(--border-mid);
-      box-shadow: 0 0 0 3px rgba(201,168,76,0.07);
-    }
+textarea, select {
+  width: 100%;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-family: var(--font-body);
+  font-size: 14.5px;
+  color: var(--text-primary);
+  resize: vertical;
+  outline: none;
+  line-height: 1.7;
+  transition: border-color var(--ease), box-shadow var(--ease);
+}
+select { resize: none; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%237A5F28' stroke-width='1.5' fill='none'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 14px center; padding-right: 38px; }
+textarea::placeholder { color: var(--text-dim); font-style: italic; }
+textarea:focus, select:focus {
+  border-color: var(--border-mid);
+  box-shadow: 0 0 0 3px rgba(201,168,76,0.07);
+}
+select option { background: #1A1A24; color: var(--text-primary); }
 
-    .char-counter {
-      text-align: right; font-size: 11px; color: var(--text-dim); margin-top: 6px;
-    }
+.char-counter {
+  text-align: right; font-size: 11px; color: var(--text-dim); margin-top: 6px;
+}
 
-    .ai-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
-    .ai-chip {
-      display: flex; align-items: center; gap: 6px;
-      padding: 7px 14px;
-      background: var(--bg-input); border: 1px solid var(--border);
-      border-radius: 24px; font-size: 12.5px; color: var(--text-muted);
-      cursor: pointer; user-select: none;
-      transition: all var(--ease);
-    }
-    .ai-chip:hover { border-color: var(--border-mid); color: var(--text-primary); }
-    .ai-chip.active {
-      border-color: var(--gold);
-      background: rgba(201,168,76,0.09);
-      color: var(--gold); font-weight: 600;
-      box-shadow: 0 0 12px rgba(201,168,76,0.12);
-    }
+/* Estilo Visual */
+.style-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.style-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 24px; font-size: 12.5px; color: var(--text-muted);
+  cursor: pointer; user-select: none;
+  transition: all var(--ease);
+}
+.style-chip:hover { border-color: var(--border-mid); color: var(--text-primary); }
+.style-chip.active {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.09);
+  color: var(--gold); font-weight: 600;
+  box-shadow: 0 0 12px rgba(201,168,76,0.12);
+}
 
-    .api-key-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin: 12px 0 8px;
-      flex-wrap: wrap;
-    }
-    .api-key-row label {
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-      letter-spacing: 0.05em;
-      white-space: nowrap;
-    }
-    .api-key-row input {
-      flex: 1;
-      background: var(--bg-input);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      padding: 10px 14px;
-      font-family: var(--font-body);
-      font-size: 13px;
-      color: var(--text-primary);
-      outline: none;
-      transition: border-color var(--ease);
-      min-width: 200px;
-    }
-    .api-key-row input:focus {
-      border-color: var(--border-mid);
-    }
-    .api-key-row .hint {
-      font-size: 11px;
-      color: var(--text-dim);
-      margin-left: auto;
-    }
-    .api-key-row .hint a {
-      color: var(--gold);
-      text-decoration: none;
-    }
-    .api-key-row .hint a:hover {
-      text-decoration: underline;
-    }
+/* AI selector */
+.ai-grid { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+.ai-chip {
+  display: flex; align-items: center; gap: 6px;
+  padding: 7px 14px;
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 24px; font-size: 12.5px; color: var(--text-muted);
+  cursor: pointer; user-select: none;
+  transition: all var(--ease);
+}
+.ai-chip:hover { border-color: var(--border-mid); color: var(--text-primary); }
+.ai-chip.active {
+  border-color: var(--gold);
+  background: rgba(201,168,76,0.09);
+  color: var(--gold); font-weight: 600;
+  box-shadow: 0 0 12px rgba(201,168,76,0.12);
+}
 
-    .actions { margin: 28px 0 0; display: flex; gap: 10px; flex-wrap: wrap; }
+.actions { margin: 28px 0 0; display: flex; gap: 10px; flex-wrap: wrap; }
 
-    .btn-generate {
-      flex: 1; min-width: 220px;
-      display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-      padding: 16px 28px;
-      background: linear-gradient(135deg, #C9A84C 0%, #A07830 100%);
-      color: #0A0A0D;
-      border: none; border-radius: var(--radius-md);
-      font-family: var(--font-display);
-      font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
-      cursor: pointer;
-      box-shadow: 0 4px 24px rgba(201,168,76,0.32);
-      transition: all var(--ease);
-      position: relative; overflow: hidden;
-    }
-    .btn-generate::after {
-      content: '';
-      position: absolute; inset:0;
-      background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
-      opacity:0; transition: opacity var(--ease);
-    }
-    .btn-generate:hover::after { opacity:1; }
-    .btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,168,76,0.45); }
-    .btn-generate:active { transform: translateY(0); }
-    .btn-generate:disabled { opacity: 0.4; cursor: not-allowed; transform: none !important; }
+.btn-generate {
+  flex: 1; min-width: 220px;
+  display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 16px 28px;
+  background: linear-gradient(135deg, #C9A84C 0%, #A07830 100%);
+  color: #0A0A0D;
+  border: none; border-radius: var(--radius-md);
+  font-family: var(--font-display);
+  font-size: 14px; font-weight: 700; letter-spacing: 0.06em;
+  cursor: pointer;
+  box-shadow: 0 4px 24px rgba(201,168,76,0.32);
+  transition: all var(--ease);
+  position: relative; overflow: hidden;
+}
+.btn-generate::after {
+  content: '';
+  position: absolute; inset:0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.15), transparent);
+  opacity:0; transition: opacity var(--ease);
+}
+.btn-generate:hover::after { opacity:1; }
+.btn-generate:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(201,168,76,0.45); }
+.btn-generate:active { transform: translateY(0); }
 
-    .btn-clear {
-      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-      padding: 16px 20px;
-      background: transparent; border: 1px solid var(--border);
-      color: var(--text-dim); border-radius: var(--radius-md);
-      font-size: 13px; cursor: pointer; transition: all var(--ease);
-    }
-    .btn-clear:hover { border-color: var(--border-mid); color: var(--text-muted); }
+.btn-clear {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 16px 20px;
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-dim); border-radius: var(--radius-md);
+  font-size: 13px; cursor: pointer; transition: all var(--ease);
+}
+.btn-clear:hover { border-color: var(--border-mid); color: var(--text-muted); }
 
-    .spinner {
-      width: 16px; height: 16px;
-      border: 2px solid rgba(10,10,13,0.3);
-      border-top-color: #0A0A0D;
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
-      display: none;
-    }
-    .btn-generate.loading .spinner { display: block; }
-    .btn-generate.loading .btn-label { opacity: 0.7; }
-    @keyframes spin { to { transform: rotate(360deg); } }
+/* Thinking animation */
+.thinking-bar {
+  display: none;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  margin: 16px 0;
+  animation: fadeIn 0.3s ease;
+}
+.thinking-bar.visible { display: block; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
 
-    .thinking-bar {
-      display: none;
-      background: var(--bg-card);
-      border: 1px solid var(--border);
-      border-radius: var(--radius-md);
-      padding: 18px 22px;
-      margin: 16px 0;
-      animation: fadeIn 0.3s ease;
-    }
-    .thinking-bar.visible { display: block; }
-    @keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+.thinking-steps { display: flex; flex-direction: column; gap: 8px; }
+.thinking-step {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; color: var(--text-dim);
+  transition: color 0.3s, transform 0.3s;
+}
+.thinking-step.active { color: var(--gold); transform: translateX(4px); }
+.thinking-step.done   { color: #4CAF50; }
+.step-icon { font-size: 14px; width: 20px; text-align: center; }
+.step-text { font-weight: 500; }
 
-    .thinking-steps { display: flex; flex-direction: column; gap: 8px; }
-    .thinking-step {
-      display: flex; align-items: center; gap: 10px;
-      font-size: 12px; color: var(--text-dim);
-      transition: color 0.3s, transform 0.3s;
-    }
-    .thinking-step.active { color: var(--gold); transform: translateX(4px); }
-    .thinking-step.done   { color: #4CAF50; }
-    .step-icon { font-size: 14px; width: 20px; text-align: center; }
-    .step-text { font-weight: 500; }
+/* Output */
+.output-section { display: none; animation: fadeIn 0.4s ease; }
+.output-section.visible { display: block; }
 
-    .output-section { display: none; animation: fadeIn 0.4s ease; }
-    .output-section.visible { display: block; }
+.output-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  box-shadow: var(--shadow-deep), var(--shadow-glow);
+}
+.output-topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-wrap: wrap; gap: 10px;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, rgba(201,168,76,0.07), rgba(201,168,76,0.02));
+  border-bottom: 1px solid var(--border);
+}
+.output-title {
+  font-family: var(--font-display); font-size: 13px;
+  font-weight: 600; letter-spacing: 0.06em; color: var(--gold);
+}
+.output-meta { font-size: 11px; color: var(--text-muted); }
+.output-btns { display: flex; gap: 8px; }
 
-    .output-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-mid);
-      border-radius: var(--radius-xl);
-      overflow: hidden;
-      box-shadow: var(--shadow-deep), var(--shadow-glow);
-    }
-    .output-topbar {
-      display: flex; align-items: center; justify-content: space-between;
-      flex-wrap: wrap; gap: 10px;
-      padding: 18px 24px;
-      background: linear-gradient(135deg, rgba(201,168,76,0.07), rgba(201,168,76,0.02));
-      border-bottom: 1px solid var(--border);
-    }
-    .output-title {
-      font-family: var(--font-display); font-size: 13px;
-      font-weight: 600; letter-spacing: 0.06em; color: var(--gold);
-    }
-    .output-meta { font-size: 11px; color: var(--text-muted); }
-    .output-btns { display: flex; gap: 8px; }
+.btn-copy, .btn-dl {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  font-size: 12px; font-weight: 600; cursor: pointer; transition: all var(--ease);
+}
+.btn-copy {
+  background: rgba(201,168,76,0.1); border: 1px solid var(--border-mid);
+  color: var(--gold);
+}
+.btn-copy:hover { background: rgba(201,168,76,0.2); border-color: var(--gold); }
+.btn-dl {
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-muted);
+}
+.btn-dl:hover { border-color: var(--border-mid); color: var(--text-primary); }
 
-    .btn-copy, .btn-dl {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 8px 16px; border-radius: var(--radius-sm);
-      font-size: 12px; font-weight: 600; cursor: pointer; transition: all var(--ease);
-    }
-    .btn-copy {
-      background: rgba(201,168,76,0.1); border: 1px solid var(--border-mid);
-      color: var(--gold);
-    }
-    .btn-copy:hover { background: rgba(201,168,76,0.2); border-color: var(--gold); }
-    .btn-dl {
-      background: transparent; border: 1px solid var(--border);
-      color: var(--text-muted);
-    }
-    .btn-dl:hover { border-color: var(--border-mid); color: var(--text-primary); }
+.output-body {
+  padding: 28px 28px;
+  max-height: 70vh; overflow-y: auto;
+}
+.output-body::-webkit-scrollbar { width: 5px; }
+.output-body::-webkit-scrollbar-track { background: transparent; }
+.output-body::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
 
-    .output-body {
-      padding: 28px 28px;
-      max-height: 70vh; overflow-y: auto;
-    }
-    .output-body::-webkit-scrollbar { width: 5px; }
-    .output-body::-webkit-scrollbar-track { background: transparent; }
-    .output-body::-webkit-scrollbar-thumb { background: var(--border-mid); border-radius: 3px; }
+#prompt-output {
+  font-size: 13px; line-height: 1.85;
+  color: var(--text-primary); white-space: pre-wrap;
+  font-family: 'Courier New', monospace;
+}
 
-    #prompt-output {
-      font-size: 13px; line-height: 1.85;
-      color: var(--text-primary); white-space: pre-wrap;
-      font-family: 'Courier New', monospace;
-    }
+.output-footer {
+  padding: 14px 24px;
+  border-top: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+}
+.char-badge {
+  font-size: 11px; color: var(--text-dim);
+  background: var(--bg-input); border: 1px solid var(--border);
+  border-radius: 20px; padding: 3px 10px;
+}
+.compat-tags { display: flex; flex-wrap: wrap; gap: 5px; }
+.compat-tag {
+  font-size: 10px; padding: 3px 9px;
+  background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.2);
+  border-radius: 16px; color: var(--gold-dim);
+}
 
-    .output-footer {
-      padding: 14px 24px;
-      border-top: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
-    }
-    .char-badge {
-      font-size: 11px; color: var(--text-dim);
-      background: var(--bg-input); border: 1px solid var(--border);
-      border-radius: 20px; padding: 3px 10px;
-    }
-    .compat-tags { display: flex; flex-wrap: wrap; gap: 5px; }
-    .compat-tag {
-      font-size: 10px; padding: 3px 9px;
-      background: rgba(201,168,76,0.07); border: 1px solid rgba(201,168,76,0.2);
-      border-radius: 16px; color: var(--gold-dim);
-    }
+.quality-bar {
+  display: none;
+  align-items: center; gap: 14px;
+  background: linear-gradient(135deg, rgba(76,175,80,0.08), rgba(76,175,80,0.03));
+  border: 1px solid rgba(76,175,80,0.25);
+  border-radius: var(--radius-md);
+  padding: 14px 18px;
+  margin-bottom: 16px;
+  animation: fadeIn 0.3s ease;
+}
+.quality-bar.visible { display: flex; }
+.quality-score {
+  font-family: var(--font-display); font-size: 20px; font-weight: 700;
+  color: #4CAF50; white-space: nowrap;
+}
+.quality-info { flex:1; }
+.quality-title { font-size: 13px; font-weight: 600; color: #81C784; }
+.quality-detail { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
 
-    .quality-bar {
-      display: none;
-      align-items: center; gap: 14px;
-      background: linear-gradient(135deg, rgba(76,175,80,0.08), rgba(76,175,80,0.03));
-      border: 1px solid rgba(76,175,80,0.25);
-      border-radius: var(--radius-md);
-      padding: 14px 18px;
-      margin-bottom: 16px;
-      animation: fadeIn 0.3s ease;
-    }
-    .quality-bar.visible { display: flex; }
-    .quality-score {
-      font-family: var(--font-display); font-size: 20px; font-weight: 700;
-      color: #4CAF50; white-space: nowrap;
-    }
-    .quality-info { flex:1; }
-    .quality-title { font-size: 13px; font-weight: 600; color: #81C784; }
-    .quality-detail { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+/* Tip box — como usar */
+.tip-box {
+  background: rgba(201,168,76,0.05);
+  border: 1px solid rgba(201,168,76,0.18);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.75;
+}
+.tip-box strong { color: var(--gold); }
+.tip-box .tip-steps { margin-top: 10px; display: flex; flex-direction: column; gap: 5px; }
+.tip-step { display: flex; gap: 10px; align-items: flex-start; }
+.tip-num {
+  min-width: 20px; height: 20px; border-radius: 50%;
+  background: var(--gold-glow); border: 1px solid var(--border-mid);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 10px; font-weight: 700; color: var(--gold); flex-shrink: 0; margin-top: 1px;
+}
 
-    #toast {
-      position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
-      background: var(--bg-card); border: 1px solid var(--border-mid);
-      border-radius: var(--radius-md); padding: 12px 22px;
-      font-size: 13px; color: var(--text-primary);
-      box-shadow: var(--shadow-deep); opacity: 0;
-      transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 100;
-      white-space: nowrap;
-    }
-    #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#toast {
+  position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: var(--bg-card); border: 1px solid var(--border-mid);
+  border-radius: var(--radius-md); padding: 12px 22px;
+  font-size: 13px; color: var(--text-primary);
+  box-shadow: var(--shadow-deep); opacity: 0;
+  transition: opacity 0.25s, transform 0.25s; pointer-events: none; z-index: 100;
+  white-space: nowrap;
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-    footer {
-      text-align: center; padding: 40px 0 0;
-      font-size: 11px; color: var(--text-dim); letter-spacing: 0.06em;
-    }
-    footer strong { color: var(--gold-dim); }
+footer {
+  text-align: center; padding: 40px 0 0;
+  font-size: 11px; color: var(--text-dim); letter-spacing: 0.06em;
+}
+footer strong { color: var(--gold-dim); }
 
-    .error-box {
-      background: rgba(220,50,50,0.07); border: 1px solid rgba(220,50,50,0.25);
-      border-radius: var(--radius-md); padding: 14px 18px;
-      font-size: 13px; color: #FF8A80; margin-top: 14px; display: none;
-    }
-    .error-box.visible { display: block; }
+.error-box {
+  background: rgba(220,50,50,0.07); border: 1px solid rgba(220,50,50,0.25);
+  border-radius: var(--radius-md); padding: 14px 18px;
+  font-size: 13px; color: #FF8A80; margin-top: 14px; display: none;
+}
+.error-box.visible { display: block; }
 
-    @media (max-width: 560px) {
-      .wrap { padding: 0 16px 80px; }
-      .card { padding: 22px 18px; }
-      .output-body { padding: 20px 18px; }
-      h1 { font-size: 24px; }
-      .output-topbar { flex-direction: column; align-items: flex-start; }
-      .api-key-row { flex-direction: column; align-items: stretch; }
-    }
-  </style>
+@media (max-width: 560px) {
+  .wrap { padding: 0 16px 80px; }
+  .card { padding: 22px 18px; }
+  .output-body { padding: 20px 18px; }
+  h1 { font-size: 24px; }
+  .output-topbar { flex-direction: column; align-items: flex-start; }
+}
+</style>
 </head>
 <body>
 <div class="wrap">
@@ -438,10 +417,21 @@
     <div class="eyebrow">✦ Motor Semântico ✦</div>
     <h1>Prompt Bíblico <em>IA</em></h1>
     <p class="subtitle">
-      <span class="status-dot"></span>
-      Cole o versículo — a IA interpreta o significado e gera automaticamente o prompt visual completo para Stories 9:16
+      Cole o versículo — o motor analisa o significado e gera o prompt completo para você levar a uma IA de imagem
     </p>
+    <div class="badge-offline">⚡ 100% Offline · Sem API · Processamento Local</div>
   </header>
+
+  <!-- TIP BOX -->
+  <div class="tip-box">
+    <strong>✦ Como funciona este gerador</strong>
+    <div class="tip-steps">
+      <div class="tip-step"><div class="tip-num">1</div><span>Cole o versículo bíblico e escolha as opções abaixo</span></div>
+      <div class="tip-step"><div class="tip-num">2</div><span>Clique em <strong>Gerar Prompt</strong> — o motor analisa e monta o prompt automaticamente (sem internet)</span></div>
+      <div class="tip-step"><div class="tip-num">3</div><span>Copie o resultado e cole no <strong>ChatGPT, Gemini ou Claude</strong> para que a IA intermediária refine e gere o prompt final de imagem</span></div>
+      <div class="tip-step"><div class="tip-num">4</div><span>Leve o prompt final para o <strong>Midjourney, Leonardo AI, DALL·E, Ideogram</strong> ou outra ferramenta de imagem</span></div>
+    </div>
+  </div>
 
   <!-- CAMPO 1 — VERSÍCULO -->
   <div class="card">
@@ -457,22 +447,42 @@
       id="versiculo"
       rows="5"
       maxlength="1200"
-      placeholder="Cole aqui o versículo bíblico completo...
+      placeholder='Cole aqui o versículo bíblico completo...
 
-Exemplo: 'Certamente a bondade e a fidelidade me seguirão todos os dias da minha vida, e habitarei na casa do Senhor para sempre.' Salmos 23:6"
+Exemplo: "Certamente a bondade e a fidelidade me seguirão todos os dias da minha vida, e habitarei na casa do Senhor para sempre." Salmos 23:6'
     ></textarea>
     <div class="char-counter"><span id="ver-count">0</span> / 1200</div>
   </div>
 
-  <!-- CAMPO 2 — IA DE DESTINO -->
+  <!-- CAMPO 2 — ESTILO VISUAL -->
+  <div class="card">
+    <div class="card-head">
+      <div class="card-icon">🎨</div>
+      <div>
+        <div class="card-title">Estilo Visual da Imagem</div>
+        <div class="card-sub">Como a cena deverá ser renderizada — baseado nas referências visuais</div>
+      </div>
+      <div class="field-num">2</div>
+    </div>
+    <div class="style-grid" id="styleGrid">
+      <div class="style-chip active" data-style="cinematic-realism">🎬 Realismo Cinematográfico</div>
+      <div class="style-chip" data-style="sacred-golden">✨ Sagrado Dourado</div>
+      <div class="style-chip" data-style="epic-biblical">⚡ Épico Bíblico</div>
+      <div class="style-chip" data-style="renaissance">🖼️ Renascentista</div>
+      <div class="style-chip" data-style="divine-light">☀️ Luz Divina</div>
+      <div class="style-chip" data-style="dramatic-storm">🌩️ Dramático Tempestuoso</div>
+    </div>
+  </div>
+
+  <!-- CAMPO 3 — IA DE DESTINO FINAL -->
   <div class="card">
     <div class="card-head">
       <div class="card-icon">🎯</div>
       <div>
-        <div class="card-title">IA de Destino</div>
-        <div class="card-sub">O prompt será otimizado para a ferramenta selecionada</div>
+        <div class="card-title">IA de Imagem Final</div>
+        <div class="card-sub">O prompt será formatado para esta ferramenta geradora de imagens</div>
       </div>
-      <div class="field-num">2</div>
+      <div class="field-num">3</div>
     </div>
     <div class="ai-grid" id="aiGrid">
       <div class="ai-chip active" data-ai="Midjourney">🎯 Midjourney</div>
@@ -481,38 +491,15 @@ Exemplo: 'Certamente a bondade e a fidelidade me seguirão todos os dias da minh
       <div class="ai-chip" data-ai="Ideogram">💡 Ideogram</div>
       <div class="ai-chip" data-ai="Flux">⚙️ Flux</div>
       <div class="ai-chip" data-ai="Google Flow">🎞️ Google Flow</div>
-      <div class="ai-chip" data-ai="Gemini">🔷 Gemini</div>
+      <div class="ai-chip" data-ai="Gemini Imagen">🔷 Gemini Imagen</div>
       <div class="ai-chip" data-ai="Adobe Firefly">🔥 Adobe Firefly</div>
-    </div>
-  </div>
-
-  <!-- CAMPO EXTRA — CHAVE DA API (OpenRouter) -->
-  <div class="card">
-    <div class="card-head">
-      <div class="card-icon">🔑</div>
-      <div>
-        <div class="card-title">Chave da API (OpenRouter)</div>
-        <div class="card-sub">Sua chave pessoal — obtida gratuitamente em openrouter.ai</div>
-      </div>
-      <div class="field-num">🔐</div>
-    </div>
-    <div class="api-key-row">
-      <label for="apiKey">Chave:</label>
-      <input type="password" id="apiKey" placeholder="sk-or-v1-..." autocomplete="off" />
-      <span class="hint">
-        <a href="https://openrouter.ai/keys" target="_blank">Obter chave</a>
-      </span>
-    </div>
-    <div style="font-size:11px; color:var(--text-dim); margin-top:4px;">
-      ⚠️ A chave fica armazenada apenas no seu navegador (localStorage). Modelo gratuito padrão: <strong>Llama 3.3 70B</strong>.
     </div>
   </div>
 
   <!-- AÇÕES -->
   <div class="actions">
     <button class="btn-generate" id="btnGerar" onclick="gerarPrompt()">
-      <div class="spinner"></div>
-      <span class="btn-label">✦ Gerar Prompt com IA</span>
+      <span class="btn-label">✦ Gerar Prompt para IA</span>
     </button>
     <button class="btn-clear" onclick="limpar()">🗑 Limpar</button>
   </div>
@@ -522,49 +509,36 @@ Exemplo: 'Certamente a bondade e a fidelidade me seguirão todos os dias da minh
   <!-- THINKING BAR -->
   <div class="thinking-bar" id="thinkingBar">
     <div class="thinking-steps" id="thinkingSteps">
-      <div class="thinking-step" data-step="1">
-        <span class="step-icon">📖</span>
-        <span class="step-text">Lendo e interpretando o versículo...</span>
-      </div>
-      <div class="thinking-step" data-step="2">
-        <span class="step-icon">🧠</span>
-        <span class="step-text">Analisando tema, emoção e simbolismo bíblico...</span>
-      </div>
-      <div class="thinking-step" data-step="3">
-        <span class="step-icon">🎨</span>
-        <span class="step-text">Construindo direção artística e cenário...</span>
-      </div>
-      <div class="thinking-step" data-step="4">
-        <span class="step-icon">✍️</span>
-        <span class="step-text">Definindo tipografia, cores e composição...</span>
-      </div>
-      <div class="thinking-step" data-step="5">
-        <span class="step-icon">✦</span>
-        <span class="step-text">Finalizando prompt profissional...</span>
-      </div>
+      <div class="thinking-step" data-step="1"><span class="step-icon">📖</span><span class="step-text">Lendo e interpretando o versículo...</span></div>
+      <div class="thinking-step" data-step="2"><span class="step-icon">🧠</span><span class="step-text">Analisando tema, emoção e simbolismo bíblico...</span></div>
+      <div class="thinking-step" data-step="3"><span class="step-icon">🎨</span><span class="step-text">Construindo direção artística e cenário...</span></div>
+      <div class="thinking-step" data-step="4"><span class="step-icon">✍️</span><span class="step-text">Definindo tipografia, cores e composição...</span></div>
+      <div class="thinking-step" data-step="5"><span class="step-icon">✦</span><span class="step-text">Finalizando prompt para IA intermediária...</span></div>
     </div>
   </div>
 
-  <!-- OUTPUT — CAMPO 3 -->
+  <!-- OUTPUT -->
   <div class="output-section" id="outputSection">
     <div class="divider">
       <div class="divider-line"></div>
-      <div class="divider-label">Prompt Gerado — Campo 3</div>
+      <div class="divider-label">Prompt para IA Intermediária</div>
       <div class="divider-line"></div>
     </div>
 
     <div class="quality-bar" id="qualityBar">
-      <div class="quality-score" id="qualityScore">100%</div>
+      <div class="quality-score" id="qualityScore">✓</div>
       <div class="quality-info">
-        <div class="quality-title" id="qualityTitle">Motor Semântico — Análise Concluída ✓</div>
-        <div class="quality-detail" id="qualityDetail">Prompt gerado com inteligência artificial · Pronto para uso</div>
+        <div class="quality-title" id="qualityTitle">Prompt Gerado — Pronto para IA Intermediária ✓</div>
+        <div class="quality-detail" id="qualityDetail">Cole no ChatGPT, Gemini ou Claude · Peça para gerar o prompt final de imagem</div>
       </div>
     </div>
 
     <div class="output-card">
       <div class="output-topbar">
-        <div class="output-title">✦ PROMPT VISUAL PROFISSIONAL — 9:16</div>
-        <div class="output-meta" id="outputMeta"></div>
+        <div>
+          <div class="output-title">✦ PROMPT PARA IA INTERMEDIÁRIA</div>
+          <div class="output-meta" id="outputMeta"></div>
+        </div>
         <div class="output-btns">
           <button class="btn-copy" onclick="copiar()">📋 Copiar</button>
           <button class="btn-dl"   onclick="baixar()">⬇ .txt</button>
@@ -581,7 +555,7 @@ Exemplo: 'Certamente a bondade e a fidelidade me seguirão todos os dias da minh
   </div>
 
   <footer>
-    <strong>Prompt Bíblico IA</strong> · Motor Semântico Automático · Legibilidade Absoluta · Stories 9:16 · 1080×1920 px
+    <strong>Prompt Bíblico IA</strong> · Motor Semântico Local · Sem API · Stories 9:16 · 1080×1920 px
   </footer>
 </div>
 
@@ -591,33 +565,24 @@ Exemplo: 'Certamente a bondade e a fidelidade me seguirão todos os dias da minh
 /* ============================================================
    STATE
    ============================================================ */
-let selectedAI = 'Midjourney';
+let selectedAI    = 'Midjourney';
+let selectedStyle = 'cinematic-realism';
 
 /* ============================================================
-   PERSISTÊNCIA DA CHAVE API (OpenRouter)
-   ============================================================ */
-const apiKeyInput = document.getElementById('apiKey');
-const savedKey = localStorage.getItem('openrouter_api_key');
-if (savedKey) {
-  apiKeyInput.value = savedKey;
-}
-apiKeyInput.addEventListener('input', () => {
-  const key = apiKeyInput.value.trim();
-  if (key && key.length > 10) {
-    localStorage.setItem('openrouter_api_key', key);
-  } else {
-    localStorage.removeItem('openrouter_api_key');
-  }
-});
-
-/* ============================================================
-   AI SELECTOR
+   SELECTORS
    ============================================================ */
 document.querySelectorAll('.ai-chip').forEach(chip => {
   chip.addEventListener('click', () => {
     document.querySelectorAll('.ai-chip').forEach(c => c.classList.remove('active'));
     chip.classList.add('active');
     selectedAI = chip.dataset.ai;
+  });
+});
+document.querySelectorAll('.style-chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.style-chip').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedStyle = chip.dataset.style;
   });
 });
 
@@ -641,129 +606,255 @@ function startThinking() {
   thinkingTimer = setInterval(() => {
     if (i > 0) steps[i-1].classList.replace('active','done');
     if (i < steps.length) { steps[i].classList.add('active'); i++; }
-    else { clearInterval(thinkingTimer); }
-  }, 900);
+    else clearInterval(thinkingTimer);
+  }, 420);
 }
 function stopThinking() {
   clearInterval(thinkingTimer);
   const bar = document.getElementById('thinkingBar');
   bar.querySelectorAll('.thinking-step').forEach(s => { s.classList.remove('active'); s.classList.add('done'); });
-  setTimeout(() => { bar.classList.remove('visible'); bar.querySelectorAll('.thinking-step').forEach(s=>s.classList.remove('done')); }, 800);
+  setTimeout(() => {
+    bar.classList.remove('visible');
+    bar.querySelectorAll('.thinking-step').forEach(s => s.classList.remove('done'));
+  }, 700);
 }
 
 /* ============================================================
-   SYSTEM PROMPT — Motor Semântico IA
+   ANÁLISE SEMÂNTICA LOCAL
    ============================================================ */
-function buildSystemPrompt(ai) {
-  return `Você é um motor semântico especializado em geração de prompts visuais profissionais para versículos bíblicos. Sua missão é criar prompts cinematográficos de altíssima qualidade para geradores de imagem IA, especificamente otimizados para ${ai}.
 
-FORMATO DE SAÍDA OBRIGATÓRIO — siga EXATAMENTE esta estrutura com os separadores:
+// Mapa de palavras-chave por tema
+const SEMANTIC_MAP = {
+  oração:     { kws: ['orar','oração','ore','orando','orate','clama','clamar','suplicar','pedir','pede'], tema: 'Oração e Comunhão', emocao: 'Reverência e Intimidade', simbolo: 'mãos postas, luz de vela, quarto fechado' },
+  fé:         { kws: ['fé','crer','crer','crê','confie','confia','confiança','acredita','acreditar'], tema: 'Fé e Confiança em Deus', emocao: 'Esperança Profunda', simbolo: 'luz no horizonte, mão estendida, ponte' },
+  amor:       { kws: ['amor','ama','amar','amou','amai','amando','misericórdia','graça','bondade'], tema: 'Amor Divino e Graça', emocao: 'Ternura e Compaixão', simbolo: 'luz dourada, coração, abraço' },
+  salvação:   { kws: ['salva','salvação','salvo','salvador','redenção','redimido','perdão','perdoar'], tema: 'Salvação e Redenção', emocao: 'Alívio e Gratidão Profunda', simbolo: 'cruz, luz rompendo trevas, correntes quebradas' },
+  paz:        { kws: ['paz','tranquilidade','descanso','repousa','quieta','calma','sossego'], tema: 'Paz e Descanso em Deus', emocao: 'Serenidade e Acolhimento', simbolo: 'waters still, pombas, pôr do sol dourado' },
+  força:      { kws: ['força','forte','fortalece','fortaleza','poder','valente','corajoso','coragem'], tema: 'Força e Poder Divino', emocao: 'Determinação e Fé Robusta', simbolo: 'montanha, armadura, raio de luz poderoso' },
+  gloria:     { kws: ['glória','glorioso','gloriosa','majestade','majestoso','honra','louvor','magnífico'], tema: 'Glória e Majestade Divina', emocao: 'Admiração e Reverência', simbolo: 'luz celestial, nuvens abertas, multidão adorando' },
+  espirito:   { kws: ['espírito','espírito santo','espírito','paráclito','consolador','sopro','fogo'], tema: 'Presença e Obra do Espírito Santo', emocao: 'Unção e Transformação', simbolo: 'pomba branca, chamas, vento suave, luz sobre a cabeça' },
+  retorno:    { kws: ['volta','vindo','virá','segunda vinda','arrebatamento','nuvens','aparecer','apareça'], tema: 'Segunda Vinda de Cristo', emocao: 'Expectativa e Majestade', simbolo: 'figura radiante descendo em nuvens, multidão olhando ao céu' },
+  vida:       { kws: ['vida','viver','viverei','ressurreição','ressuscitou','morreu','morte','eterno','eternidade'], tema: 'Vida Eterna e Ressurreição', emocao: 'Triunfo e Esperança Gloriosa', simbolo: 'túmulo vazio, luz rompendo, semente germinando' },
+  palavra:    { kws: ['palavra','escrito','diz o senhor','assim diz','escritura','lei','mandamento'], tema: 'Autoridade da Palavra Divina', emocao: 'Reverência e Certeza', simbolo: 'livro aberto brilhando, tábuas de pedra, rolo de pergaminho' },
+  cura:       { kws: ['cura','sarar','sarado','sarou','curai','enfermo','doença','levantar','levantou'], tema: 'Cura e Restauração Divina', emocao: 'Gratidão e Esperança', simbolo: 'mãos que curam, luz sobre o corpo, pessoa de pé' },
+  provisao:   { kws: ['provê','prover','provisão','necessidade','suprirá','pão','alimento','sustento','pastor'], tema: 'Provisão e Cuidado do Senhor', emocao: 'Gratidão e Confiança Filial', simbolo: 'pastor e ovelhas, mesa farta, mãos abertas recebendo' },
+};
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-ANÁLISE SEMÂNTICA DO VERSÍCULO
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-▸ TEMA PRINCIPAL: [identifique o tema central]
-▸ TEMAS SECUNDÁRIOS: [liste 2-3 temas secundários]
-▸ EMOÇÃO PREDOMINANTE: [defina a emoção principal]
-▸ PERSONAGENS IDENTIFICADOS: [personagens bíblicos explícitos ou implícitos]
-▸ SÍMBOLOS ESPIRITUAIS: [símbolos teológicos presentes]
-▸ MENSAGEM CENTRAL: [síntese da mensagem do versículo em 1-2 frases]
+function analisarVersiculo(texto) {
+  const lower = texto.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  let tema = 'Revelação e Mensagem Divina';
+  let emocao = 'Reverência e Contemplação';
+  let simbolo = 'luz celestial, céu aberto, presença divina';
+  let kwsEncontradas = [];
+  let maxHits = 0;
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PROMPT VISUAL CINEMATOGRÁFICO
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[Escreva aqui um parágrafo longo, rico e cinematográfico descrevendo a cena visual. Deve ser extremamente detalhado, com 150-250 palavras, descrevendo: a cena principal, personagens, elementos simbólicos, ambiente, profundidade de campo, perspectiva da câmera, elementos em primeiro plano e fundo, movimento implícito, detalhes atmosféricos. A cena deve representar ESPECIFICAMENTE o significado deste versículo, nunca de forma genérica.]
+  for (const [cat, data] of Object.entries(SEMANTIC_MAP)) {
+    const hits = data.kws.filter(kw => lower.includes(kw.normalize('NFD').replace(/[\u0300-\u036f]/g, ''))).length;
+    if (hits > maxHits) {
+      maxHits = hits;
+      tema    = data.tema;
+      emocao  = data.emocao;
+      simbolo = data.simbolo;
+      kwsEncontradas = data.kws.filter(kw => lower.includes(kw.normalize('NFD').replace(/[\u0300-\u036f]/g, '')));
+    }
+  }
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DIREÇÃO ARTÍSTICA
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-▸ ESTILO VISUAL: [ex: Cinematic Realism ultra-detalhado / Renaissance Inspired / Epic Biblical / Sacred Atmosphere / etc.]
-▸ QUALIDADE: 8K ultra-HD, resolução fotográfica, detalhes microscópicos, nitidez absoluta, masterwork
-▸ PROPORÇÃO: vertical 9:16, 1080×1920 px, otimizado para Stories e Reels
-▸ RENDERIZAÇÃO: [Ray-tracing / fotorrealista / pintura digital / etc. conforme o estilo]
+  // Extrair palavras de destaque (maiúsculas semânticas)
+  const stopWords = new Set(['de','da','do','em','e','a','o','as','os','que','um','uma','para','com','se','não','nos','na','ao','pelo','pela','mais','mas','ou','como','sua','seu','das','dos','ao','te','me','lhe','já','bem','por','este','esta','isso','isto','aqui','ali','lá','só','até']);
+  const palavras = texto.replace(/["""''.,;:!?—–\-\(\)]/g, ' ').split(/\s+/)
+    .map(w => w.trim().replace(/[^\w\sáéíóúãõâêîôûàèìòùäëïöüç]/gi, ''))
+    .filter(w => w.length > 3 && !stopWords.has(w.toLowerCase()));
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DIREÇÃO DE FOTOGRAFIA
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-▸ ENQUADRAMENTO: [tipo de plano e ângulo específico adequado ao versículo]
-▸ LENTE: [distância focal e efeito — ex: grande-angular 24mm / teleobjetiva 85mm]
-▸ PROFUNDIDADE DE CAMPO: [abertura e bokeh adequados]
-▸ ILUMINAÇÃO: [descrição detalhada da iluminação — hora do dia, direção, qualidade da luz]
-▸ ATMOSFERA: [descrição da atmosfera emocional e visual]
-▸ PALETA DE CORES: [cores predominantes em HEX — paleta completa de 4-6 cores com nomes]
+  // Frequência
+  const freq = {};
+  palavras.forEach(w => { const k = w.toLowerCase(); freq[k] = (freq[k] || 0) + 1; });
+  const destaques = Object.entries(freq)
+    .sort((a,b) => b[1]-a[1])
+    .slice(0, 5)
+    .map(([w]) => w);
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DIREÇÃO TIPOGRÁFICA COMPLETA
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-▸ FONTE PRINCIPAL: [nome da fonte Google Fonts + justificativa baseada no versículo]
-▸ TAMANHO DO CORPO: [tamanho em px para 1080px de largura]
-▸ PESO DA FONTE: [Regular / Medium / SemiBold / Bold / ExtraBold / Black]
-▸ COR PRINCIPAL DO TEXTO: [HEX + nome da cor]
-▸ COR SECUNDÁRIA / DESTAQUE: [HEX + nome da cor]
-▸ COR DA REFERÊNCIA BÍBLICA: [HEX + nome da cor]
-▸ POSICIONAMENTO: [topo / centro / base — com % de posição vertical]
-▸ ALINHAMENTO: [centralizado / esquerda / justificado]
-▸ SOMBRA DO TEXTO: text-shadow: [valores CSS completos]
-▸ CONTORNO DO TEXTO: -webkit-text-stroke: [valores CSS completos]
-▸ FUNDO DO TEXTO: [overlay, gradient, box — com opacity e cor]
-▸ HIERARQUIA VISUAL:
-  — Versículo: [tamanho e peso]
-  — Palavras-chave: [tamanho e peso — % maior que o corpo]
-  — Referência bíblica: [tamanho e estilo]
+  return { tema, emocao, simbolo, destaques, kwsEncontradas };
+}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-DESTAQUES SEMÂNTICOS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-▸ PALAVRAS A DESTACAR: [liste todas as palavras de alto valor semântico deste versículo]
-▸ RECURSO DE DESTAQUE: [cor + peso + escala + glow — especificações técnicas]
-▸ JUSTIFICATIVA: [por que essas palavras foram selecionadas semanticamente]
+/* ============================================================
+   ESTILOS VISUAIS — mapa de parâmetros
+   ============================================================ */
+const ESTILOS = {
+  'cinematic-realism': {
+    nome: 'Realismo Cinematográfico Ultra-Detalhado',
+    descricao: 'Fotorrealismo cinematográfico de alto padrão, com iluminação Rembrandt, profundidade de campo bokeh, partículas de luz suspensas no ar, texturas microscópicas visíveis — pedra, tecido, pele, madeira',
+    luz: 'Luz Rembrandt lateral, raios de luz volumétricos (god rays) penetrando a cena, névoa dourada atmosférica, sombras profundas com penumbra suave',
+    paleta: '#2C1A0E (sombra profunda), #7B4A1E (terra quente), #C9A84C (ouro sagrado), #F5DEB3 (trigo/luz difusa), #FFF8E7 (luz celestial)',
+    renderizacao: 'Ray-tracing fotorrealista, 8K ultra-HD, ISO cinematográfico, lente anamórfica 35mm',
+    parametros_mj: '--ar 9:16 --v 6.1 --style raw --q 2 --chaos 5',
+    exemplos_cena: 'Figura humana em ambiente histórico palestino do século I, pedras antigas, pó de terra, tecidos de linho, luz natural intensa',
+  },
+  'sacred-golden': {
+    nome: 'Sagrado Dourado — Sacred Gold',
+    descricao: 'Estética de iluminação sagrada com tons dourados intensos, fundo escuro dramático, partículas de luz flutuantes como poeira de ouro, atmosfera mística e reverente',
+    luz: 'Luz sagrada dourada emanando de fonte divina superior, contraluz dramático, halos de luz, brilhos dourados nas bordas dos objetos',
+    paleta: '#0D0A04 (negro sagrado), #3D2B00 (bronze antigo), #8B6914 (ouro antigo), #C9A84C (ouro puro), #FFE680 (luz dourada), #FFFDE7 (luz divina)',
+    renderizacao: 'Digital painting com técnica de chiaroscuro sagrado, qualidade museum-grade, detalhes de iconografia',
+    parametros_mj: '--ar 9:16 --v 6.1 --style raw --q 2 --chaos 3',
+    exemplos_cena: 'Fundo escuro dramático, figura iluminada por luz superior dourada, partículas de luz, composição vertical centralizada',
+  },
+  'epic-biblical': {
+    nome: 'Épico Bíblico — Epic Biblical Scene',
+    descricao: 'Composição épica de escala monumental, céu dramático com nuvens em movimento, massas populacionais, arquitetura bíblica imponente, escala heroica de filme épico',
+    luz: 'Luz dramática de fim de dia, céu com volumetria de nuvens épicas, clarão divino rompendo as nuvens, efeitos atmosféricos dramáticos',
+    paleta: '#1A0E00 (trevas), #4A3000 (terra bíblica), #8C6020 (pedra dourada), #D4A850 (pôr do sol), #FF8C00 (clarão), #FFF0D0 (luz divina)',
+    renderizacao: 'VFX cinematográfico nível Hollywood, composição digital épica, partículas volumétricas, nuvens simuladas',
+    parametros_mj: '--ar 9:16 --v 6.1 --style raw --q 2 --chaos 15',
+    exemplos_cena: 'Cena com múltiplos personagens, arquitetura bíblica, céu dramaticamente iluminado, perspectiva épica de baixo para cima',
+  },
+  'renaissance': {
+    nome: 'Renascentista Sagrado — Sacred Renaissance',
+    descricao: 'Pintura a óleo renascentista ultra-detalhada no estilo de Caravaggio e Rembrandt, com sfumato, anatomia perfeita, draped fabrics, composição triangular clássica',
+    luz: 'Chiaroscuro puro no estilo Caravaggio, fonte de luz única lateral, sombras dramáticas, luz modelando volumes',
+    paleta: '#1A1008 (sombra renascentista), #5C3A1E (vermelho terroso), #8B6914 (ocre dourado), #C9A84C (dourado renascentista), #F5E6C8 (luz difusa), #FFF8F0 (branco leitoso)',
+    renderizacao: 'Oil painting ultra-realistic, master artwork quality, museum-grade, brushwork visible, craquelure texture',
+    parametros_mj: '--ar 9:16 --v 6.1 --style raw --q 2 --chaos 5',
+    exemplos_cena: 'Composição clássica triangular, figuras draped em tecidos ricos, fundo escuro, mãos expressivas, olhares contemplativos',
+  },
+  'divine-light': {
+    nome: 'Luz Divina — Divine Radiance',
+    descricao: 'Saturação de luz celestial branca e dourada, figuras etéreas semi-translúcidas, céu aberto com nuvens brancas e luz torrencial, sensação de transcendência e glória',
+    luz: 'Luz divina branca-dourada torrencial de cima, backlighting total, lens flare sagrado, bloom de luz intensa, halo de glória',
+    paleta: '#E8F4FD (azul celestial claro), #FFF9E6 (branco celestial), #FFE566 (dourado brilhante), #FFC107 (âmbar dourado), #FF8F00 (laranja divino), #FFFFFF (luz pura)',
+    renderizacao: 'VFX celestial, god rays, volumetric lighting extremo, bloom effect, partículas de luz branca',
+    parametros_mj: '--ar 9:16 --v 6.1 --style raw --q 2 --chaos 8',
+    exemplos_cena: 'Céu aberto com luz torrencial descendo, figura em adoração com braços abertos, nuvens luminosas, atmosfera de glória',
+  },
+  'dramatic-storm': {
+    nome: 'Dramático Tempestuoso — Dramatic Storm',
+    descricao: 'Contraste extremo entre trevas e luz, tempestade dramática com raios, mar revolto ou deserto imponente, figura solitária diante da grandeza divina, tensão épica',
+    luz: 'Raios de tempestade, clarões intermitentes, luz atravessando nuvens negras, contraste máximo preto/branco/dourado',
+    paleta: '#050508 (negro tempestuoso), #1A1A2E (azul-noite), #4A0E0E (vermelho-trovão), #8B6914 (dourado dramático), #E8D44D (clarão), #FFFFFF (relâmpago)',
+    renderizacao: 'Dramatic digital art, storm VFX, lightning effects, volumetric rain, epic atmosphere',
+    parametros_mj: '--ar 9:16 --v 6.1 --style raw --q 2 --chaos 20',
+    exemplos_cena: 'Figura humana pequena diante de tempestade colossal, ondas enormes, céu negro rasgado por luz divina, escala que evidencia grandeza de Deus',
+  },
+};
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-SISTEMA DE LEGIBILIDADE ABSOLUTA
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-▸ SOMBRA: drop-shadow [valores completos]
-▸ GLOW: [cor e intensidade do brilho nas palavras-chave]
-▸ OVERLAY: [gradiente ou véu semitransparente — cor, opacidade, posição]
-▸ CONTROLE DE CONTRASTE: [ajuste de luminosidade atrás do texto]
-▸ ÁREA SEGURA: margens obrigatórias — sup: 250px · inf: 300px · lat: 100px
+/* ============================================================
+   REFERÊNCIA BÍBLICA — extrair do texto
+   ============================================================ */
+function extrairReferencia(texto) {
+  // Padrões: "João 3:16", "1 Cor 13:4-7", "Sl 23.6"
+  const match = texto.match(/\b(\d?\s?[A-Za-záéíóúãõâêîôûàèìòùäëïöüçÁÉÍÓÚÃÕÂÊÎÔÛÀÈÌÒÙÄËÏÖÜÇ]+\.?\s*\d+[:.]\d+(?:-\d+)?(?:\s*\|\s*\w+)?)/);
+  return match ? match[1].trim() : '';
+}
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PROMPT FINAL OTIMIZADO PARA ${ai.toUpperCase()}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-[Escreva aqui o prompt final consolidado e otimizado especificamente para ${ai}, incluindo:
-- Toda a descrição visual em formato correto para ${ai}
-- Instruções de texto integradas (TEXTO NA IMAGEM / WITH TEXT OVERLAY)
-- O versículo completo exatamente como fornecido
-- A referência bíblica (Livro Capítulo:Versículo)
-- Palavras-chave a destacar
-- Especificações de tipografia integradas ao prompt
-- Parâmetros de qualidade, proporção e estilo adequados para ${ai}
-- Para Midjourney: inclua --ar 9:16 --v 6.1 --style raw e outros parâmetros relevantes
-- Para Leonardo AI: inclua instruções de estilo específicas da plataforma
-- Para DALL-E/ChatGPT: formato de instrução clara e detalhada
-- Para outros: adeque o formato ao padrão da plataforma
-O prompt final deve ser completo e pronto para colar diretamente na ferramenta, sem necessitar de qualquer edição adicional.]
+/* ============================================================
+   CONSTRUTOR DO PROMPT PARA IA INTERMEDIÁRIA
+   ============================================================ */
+function buildPromptParaIA(versiculo, analise, estilo, aiDestino) {
+  const estiloData = ESTILOS[estilo] || ESTILOS['cinematic-realism'];
+  const referencia = extrairReferencia(versiculo);
+  const textoSemRef = referencia ? versiculo.replace(referencia, '').trim().replace(/[—–-]+$/, '').trim() : versiculo;
+  const destaques = analise.destaques.join(', ');
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RESTRIÇÕES OBRIGATÓRIAS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-✗ Apenas 1 imagem estática — sem vídeo, animação ou GIF
-✗ Todo texto na imagem obrigatoriamente em Português do Brasil (PT-BR)
-✗ Cena específica para ESTE versículo — nunca genérica ou aleatória
-✗ Texto completo e íntegro — sem cortar, resumir ou traduzir palavras
+  return `═══════════════════════════════════════════════════
+MISSÃO PARA A IA: GERAR PROMPT VISUAL BÍBLICO
+═══════════════════════════════════════════════════
+
+Você é um especialista em criação de prompts visuais cinematográficos para IA geradora de imagens.
+Sua tarefa é criar um prompt profissional e completo para gerar uma imagem bíblica deslumbrante.
+
+═══════════════════════════════════════════════════
+DADOS DO VERSÍCULO
+═══════════════════════════════════════════════════
+
+📖 VERSÍCULO COMPLETO:
+"${textoSemRef}"
+
+📍 REFERÊNCIA BÍBLICA: ${referencia || '[extrair do versículo]'}
+🎯 IA DE DESTINO FINAL: ${aiDestino}
+🎨 ESTILO VISUAL: ${estiloData.nome}
+
+═══════════════════════════════════════════════════
+ANÁLISE SEMÂNTICA (já processada — use como base)
+═══════════════════════════════════════════════════
+
+▸ TEMA CENTRAL: ${analise.tema}
+▸ EMOÇÃO PREDOMINANTE: ${analise.emocao}
+▸ SÍMBOLOS ESPIRITUAIS: ${analise.simbolo}
+▸ PALAVRAS DE DESTAQUE SEMÂNTICO: ${destaques}
+
+═══════════════════════════════════════════════════
+ESPECIFICAÇÕES VISUAIS — SIGA EXATAMENTE
+═══════════════════════════════════════════════════
+
+📐 FORMATO OBRIGATÓRIO: Vertical 9:16 · 1080×1920 px · Stories/Reels
+🖼️ ESTILO DE RENDERIZAÇÃO: ${estiloData.renderizacao}
+💡 ILUMINAÇÃO: ${estiloData.luz}
+🎨 PALETA DE CORES: ${estiloData.paleta}
+🏛️ REFERÊNCIA DE CENA: ${estiloData.exemplos_cena}
+
+═══════════════════════════════════════════════════
+DIREÇÃO TIPOGRÁFICA — TEXTO NA IMAGEM (PT-BR)
+═══════════════════════════════════════════════════
+
+O texto do versículo DEVE aparecer na imagem em Português do Brasil.
+Estrutura visual do texto (inspirada nas referências):
+
+▸ TEXTO PRINCIPAL: "${textoSemRef}"
+  — Posicionamento: 55% a 90% da altura vertical (parte inferior da imagem)
+  — Fonte sugerida: Cinzel / Playfair Display / EB Garamond (serif elegante)
+  — Cor base: #FFFFFF (branco puro) com sombra escura para legibilidade
+  — Tamanho: corpo em ~48-56px para largura de 1080px
+
+▸ PALAVRAS A DESTACAR EM DOURADO/NEGRITO: ${destaques}
+  — Cor de destaque: #C9A84C (dourado) ou #FFE680 (dourado brilhante)
+  — Peso: ExtraBold ou Black
+  — Podem ser ~20-30% maiores que o corpo do texto
+
+▸ REFERÊNCIA BÍBLICA: "${referencia || '[Livro Cap:Versículo]'}"
+  — Posição: abaixo do versículo, centralizado
+  — Cor: #C9A84C (dourado suave)
+  — Tamanho menor: ~36-40px
+  — Estilo: Cinzel ou similar, com separadores decorativos (✦ ou linhas)
+
+▸ OVERLAY PARA LEGIBILIDADE: gradiente escuro semitransparente
+  cobrindo a parte inferior da imagem (60% a 100% da altura)
+  para garantir que o texto seja lido com clareza absoluta
+
+═══════════════════════════════════════════════════
+RESTRIÇÕES ABSOLUTAS — NÃO VIOLAR
+═══════════════════════════════════════════════════
+
+✗ APENAS 1 imagem estática — sem vídeo, sem animação
+✗ TODO texto na imagem OBRIGATORIAMENTE em Português do Brasil (PT-BR)
+✗ Cena ESPECÍFICA para ESTE versículo — nunca genérica
+✗ Texto COMPLETO e ÍNTEGRO na imagem — sem cortar ou resumir
 ✗ Sem watermarks, logos ou marcas d'água
-✗ Sem caricaturas ou estilo infantil
-✗ Nenhuma palavra fora da área segura definida`;
+✗ Sem caricatura ou estilo infantil/cartoon
+✗ Sem texto em inglês na imagem
+✗ Margem de segurança: 80px nas laterais, 200px no topo, 100px na base
+
+═══════════════════════════════════════════════════
+O QUE VOCÊ DEVE ENTREGAR
+═══════════════════════════════════════════════════
+
+1. DESCRIÇÃO DA CENA (150-250 palavras): descreva cinematograficamente
+   a cena principal, ambiente, personagens, perspectiva, atmosfera e detalhes,
+   ESPECIFICAMENTE relacionada ao significado deste versículo.
+
+2. PROMPT FINAL PARA ${aiDestino.toUpperCase()}: o prompt completo,
+   formatado corretamente para ${aiDestino}, pronto para copiar e colar
+   diretamente na ferramenta.${aiDestino === 'Midjourney' ? '\n   Inclua os parâmetros: ' + estiloData.parametros_mj : ''}
+
+O prompt deve produzir uma imagem no padrão das melhores imagens bíblicas
+cinematográficas — como as geradas pelo ChatGPT e Gemini para conteúdo
+devocional de alto impacto visual para Instagram Stories e WhatsApp Status.`;
 }
 
 /* ============================================================
-   GERAR PROMPT — Chamada à API (OpenRouter com fallback)
+   GERAR PROMPT — 100% LOCAL
    ============================================================ */
-async function gerarPrompt() {
+function gerarPrompt() {
   const versiculo = versiculoEl.value.trim();
-  const apiKey = apiKeyInput.value.trim();
 
-  // Validação do versículo
   if (!versiculo) {
     showToast('⚠️ Cole um versículo bíblico primeiro.');
     versiculoEl.focus();
@@ -773,176 +864,63 @@ async function gerarPrompt() {
     showToast('⚠️ Versículo muito curto. Cole o texto completo.');
     return;
   }
-  if (!/\b[A-Za-zÀ-ú]+\s+\d+:\d+\b/.test(versiculo)) {
-    showToast('⚠️ Inclua a referência bíblica (ex: Salmos 23:6) no final do texto.');
-    return;
-  }
 
-  if (!apiKey || apiKey.length < 10) {
-    showToast('⚠️ Insira uma chave de API da OpenRouter (obtenha em openrouter.ai/keys).');
-    apiKeyInput.focus();
-    return;
-  }
-
-  if (window.location.protocol === 'file:') {
-    showToast('⚠️ Use um servidor HTTP (ex: Live Server) para evitar bloqueios CORS.');
-    return;
-  }
-
-  const btn = document.getElementById('btnGerar');
   const errorBox = document.getElementById('errorBox');
   errorBox.classList.remove('visible');
-  errorBox.textContent = '';
-
-  btn.disabled = true;
-  btn.classList.add('loading');
   document.getElementById('outputSection').classList.remove('visible');
   document.getElementById('qualityBar').classList.remove('visible');
   startThinking();
 
-  const userMessage = `Versículo bíblico para gerar o prompt visual:
-
-"${versiculo}"
-
-IA de destino: ${selectedAI}
-
-Gere o prompt visual profissional completo seguindo EXATAMENTE o formato do sistema, analisando profundamente o significado teológico e espiritual deste versículo para criar uma imagem deslumbrante e emocionalmente impactante que represente ESPECIFICAMENTE esta mensagem bíblica.`;
-
-  // Lista de modelos gratuitos (fallback automático)
-  const modelos = [
-    'meta-llama/llama-3.3-70b-instruct:free',
-    'mistralai/mistral-7b-instruct:free',
-    'google/gemini-flash-1.5:free',
-    'cohere/command-r:free'
-  ];
-
-  let ultimoErro = null;
-
-  for (const modelo of modelos) {
+  // Processamento local (simula tempo de análise para UX)
+  setTimeout(() => {
     try {
-      const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-          'HTTP-Referer': window.location.origin || 'http://localhost',
-          'X-Title': 'Prompt Biblico IA'
-        },
-        body: JSON.stringify({
-          model: modelo,
-          messages: [
-            { role: 'system', content: buildSystemPrompt(selectedAI) },
-            { role: 'user', content: userMessage }
-          ],
-          max_tokens: 4000,
-          temperature: 0.7
-        })
-      });
-
-      if (!response.ok) {
-        let errorMsg = `Erro HTTP ${response.status}`;
-        try {
-          const errData = await response.json();
-          if (errData.error) {
-            errorMsg = errData.error.message || JSON.stringify(errData.error);
-            if (errData.error.metadata) errorMsg += ` (${errData.error.metadata})`;
-          } else if (errData.message) {
-            errorMsg = errData.message;
-          }
-        } catch (_) { /* ignora */ }
-        throw new Error(errorMsg);
-      }
-
-      const data = await response.json();
-      const promptText = data.choices[0].message.content;
-
-      if (!promptText || promptText.trim().length === 0) {
-        throw new Error('Resposta vazia.');
-      }
-
-      // Sucesso!
+      const analise = analisarVersiculo(versiculo);
+      const promptText = buildPromptParaIA(versiculo, analise, selectedStyle, selectedAI);
       stopThinking();
-      renderOutput(promptText, versiculo);
-      return;
-
-    } catch (err) {
-      ultimoErro = err.message;
-      console.warn(`Modelo ${modelo} falhou:`, err.message);
-      if (modelo === modelos[modelos.length - 1]) {
-        throw new Error(`Todos os modelos gratuitos falharam. Último erro: ${ultimoErro}`);
-      }
-      // Aguarda 500ms antes de tentar o próximo
-      await new Promise(r => setTimeout(r, 500));
+      renderOutput(promptText, versiculo, analise);
+    } catch(err) {
+      stopThinking();
+      errorBox.textContent = '⚠️ Erro interno ao processar. Tente novamente.';
+      errorBox.classList.add('visible');
+      console.error(err);
     }
-  }
-
-  // Se chegou aqui, algo deu errado
-  throw new Error('Não foi possível gerar o prompt. Tente novamente mais tarde.');
+  }, 2300);
 }
 
 /* ============================================================
    RENDERIZAR OUTPUT
    ============================================================ */
-function renderOutput(promptText, versiculo) {
-  const btn = document.getElementById('btnGerar');
-  btn.disabled = false;
-  btn.classList.remove('loading');
-
+function renderOutput(promptText, versiculo, analise) {
   document.getElementById('prompt-output').textContent = promptText;
   document.getElementById('charCount').textContent = `${promptText.length.toLocaleString('pt-BR')} caracteres`;
-
-  const meta = {
-    emocao: extrairCampo(promptText, 'EMOÇÃO PREDOMINANTE'),
-    estilo: extrairCampo(promptText, 'ESTILO VISUAL')
-  };
-  const metaStr = [meta.emocao, meta.estilo, selectedAI].filter(Boolean).join(' · ');
-  document.getElementById('outputMeta').textContent = metaStr || 'Prompt gerado via OpenRouter';
+  document.getElementById('outputMeta').textContent = `${analise.tema} · ${analise.emocao} · ${selectedAI}`;
 
   const compatEl = document.getElementById('compatTags');
-  compatEl.innerHTML = ['Midjourney','Leonardo AI','DALL·E 3','Ideogram','Flux','Google Flow','Gemini','Firefly']
-    .map(ai => `<span class="compat-tag">${ai}</span>`).join('');
+  compatEl.innerHTML = ['ChatGPT','Gemini','Claude','Copilot'].map(ia =>
+    `<span class="compat-tag">→ ${ia}</span>`
+  ).join('');
 
-  const qBar = document.getElementById('qualityBar');
-  qBar.classList.add('visible');
-  const checks = [
-    promptText.includes('ANÁLISE SEMÂNTICA'),
-    promptText.includes('PROMPT VISUAL'),
-    promptText.includes('DIREÇÃO TIPOGRÁFICA'),
-    promptText.includes('DESTAQUES SEMÂNTICOS'),
-    promptText.includes('9:16'),
-    promptText.length > 1500,
-  ];
-  const score = Math.round((checks.filter(Boolean).length / checks.length) * 100);
-  document.getElementById('qualityScore').textContent = score + '%';
-  document.getElementById('qualityTitle').textContent =
-    score >= 90 ? 'Motor Semântico IA — Análise Completa ✓' : 'Prompt Gerado ✓';
+  document.getElementById('qualityBar').classList.add('visible');
+  document.getElementById('qualityTitle').textContent = 'Prompt Gerado — Cole numa IA para Refinar ✓';
   document.getElementById('qualityDetail').textContent =
-    `Análise Semântica · Direção Artística · Tipografia · Destaques · Área Segura 9:16 · PT-BR`;
+    `Análise Semântica · Direção Artística · Tipografia PT-BR · Área Segura 9:16 · Destaques Semânticos`;
 
   document.getElementById('outputSection').classList.add('visible');
-
   setTimeout(() => {
     document.getElementById('outputSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
   }, 150);
 
-  showToast('✦ Prompt gerado com sucesso! (OpenRouter)');
-}
-
-function extrairCampo(texto, label) {
-  const regex = new RegExp(`${label}:\\s*([^\\n]+)`);
-  const match = texto.match(regex);
-  return match ? match[1].trim() : '';
+  showToast('✦ Prompt gerado! Cole no ChatGPT, Gemini ou Claude.');
 }
 
 /* ============================================================
-   COPIAR, BAIXAR, LIMPAR, TOAST, ATALHO, E DETECÇÃO file://
-   (mantidos iguais ao original)
+   COPIAR / DOWNLOAD / LIMPAR
    ============================================================ */
 function copiar() {
   const text = document.getElementById('prompt-output').textContent;
   if (!text) { showToast('⚠️ Gere um prompt primeiro.'); return; }
   navigator.clipboard.writeText(text)
-    .then(() => showToast('📋 Prompt copiado!'))
+    .then(() => showToast('📋 Copiado! Cole no ChatGPT, Gemini ou Claude.'))
     .catch(() => {
       const ta = document.createElement('textarea');
       ta.value = text; document.body.appendChild(ta); ta.select();
@@ -971,16 +949,21 @@ function limpar() {
   document.getElementById('errorBox').classList.remove('visible');
   document.getElementById('thinkingBar').classList.remove('visible');
   document.querySelectorAll('.ai-chip').forEach((c,i) => c.classList.toggle('active', i===0));
-  selectedAI = 'Midjourney';
+  document.querySelectorAll('.style-chip').forEach((c,i) => c.classList.toggle('active', i===0));
+  selectedAI    = 'Midjourney';
+  selectedStyle = 'cinematic-realism';
   versiculoEl.focus();
   showToast('🗑 Campos limpos.');
 }
 
+/* ============================================================
+   TOAST
+   ============================================================ */
 function showToast(msg) {
   const t = document.getElementById('toast');
   t.textContent = msg; t.classList.add('show');
   clearTimeout(t._timer);
-  t._timer = setTimeout(() => t.classList.remove('show'), 2800);
+  t._timer = setTimeout(() => t.classList.remove('show'), 3200);
 }
 
 versiculoEl.addEventListener('keydown', e => {
@@ -988,27 +971,6 @@ versiculoEl.addEventListener('keydown', e => {
     e.preventDefault(); gerarPrompt();
   }
 });
-
-if (window.location.protocol === 'file:') {
-  console.warn('⚠️ Ambiente local (file://) detectado. As chamadas à API podem ser bloqueadas.');
-  const aviso = document.createElement('div');
-  aviso.style.cssText = `
-    background: rgba(255, 193, 7, 0.15);
-    border: 1px solid rgba(255, 193, 7, 0.4);
-    border-radius: var(--radius-md);
-    padding: 12px 18px;
-    margin-bottom: 16px;
-    font-size: 13px;
-    color: #FFD54F;
-    text-align: center;
-  `;
-  aviso.innerHTML = `
-    ⚠️ <strong>Ambiente local (file://) detectado.</strong>
-    Para que a API funcione, sirva este arquivo via servidor HTTP (ex: Live Server no VSCode, Python http.server, etc.).
-  `;
-  const wrap = document.querySelector('.wrap');
-  wrap.insertBefore(aviso, document.querySelector('.card'));
-}
 </script>
 </body>
 </html>
